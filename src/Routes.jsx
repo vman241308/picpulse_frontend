@@ -3,6 +3,7 @@ import Error404 from "./pages/error/404";
 import Home from "./pages/home";
 import SignIn from "./pages/auth/signIn";
 import SignUp from "./pages/auth/signUp";
+import VerificationCode from "./pages/auth/verificationCode";
 
 const Routes = [
   {
@@ -22,6 +23,10 @@ const Routes = [
   {
     path: "signup",
     element: <SignUp />,
+  },
+  {
+    path: "verification",
+    element: <VerificationCode />,
   },
   {
     path: "*",

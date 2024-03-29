@@ -18,11 +18,14 @@
     "@mui/x-date-pickers": "^7.0.0",
     "@reduxjs/toolkit": "^2.2.2",
     "dayjs": "^1.11.10",
+    "framer-motion": "^11.0.23",
+    "mui-one-time-password-input": "^2.0.2",
     "path": "^0.12.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.1.0",
-    "react-router-dom": "^6.22.3"
+    "react-router-dom": "^6.22.3",
+    "styled-component": "^2.8.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
