@@ -4,6 +4,7 @@ import Home from "./pages/home";
 import SignIn from "./pages/auth/signIn";
 import SignUp from "./pages/auth/signUp";
 import VerificationCode from "./pages/auth/verificationCode";
+import ForgotPwd from "./pages/auth/forgotPwd";
 
 const Routes = [
   {
@@ -27,6 +28,10 @@ const Routes = [
   {
     path: "verification",
     element: <VerificationCode />,
+  },
+  {
+    path: "forgot",
+    element: <ForgotPwd />,
   },
   {
     path: "*",

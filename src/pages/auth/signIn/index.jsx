@@ -18,7 +18,7 @@ import PPSnackbar from "@/components/PPSnackbar";
 import PPCopyright from "@/components/PPCopyright";
 
 import { validateEmails } from "@/utils/functions";
-import backgroundImage from "@/assets/background.jpeg";
+import backgroundImage from "@/assets/background.jpg";
 
 const SignIn = () => {
   const [state, setState] = useState({
@@ -182,7 +182,7 @@ const SignIn = () => {
             </LoadingButton>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="/forgot" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>

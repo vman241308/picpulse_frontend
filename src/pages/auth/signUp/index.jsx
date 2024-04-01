@@ -17,7 +17,7 @@ import PPSnackbar from "@/components/PPSnackbar";
 import PPCopyright from "@/components/PPCopyright";
 
 import { validateEmails } from "@/utils/functions";
-import backgroundImage from "@/assets/background.jpeg";
+import backgroundImage from "@/assets/background.jpg";
 
 const SignUp = () => {
   const [state, setState] = useState({
