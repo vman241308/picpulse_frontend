@@ -43,7 +43,7 @@ const ForgotPwd = () => {
     event.preventDefault();
     if (state.email != "" && validateEmails(state.email)) {
       console.log("next step to get coode!");
-      setState(() => ({
+      setState((prev) => ({
         ...prev,
         loading: true,
       }));
