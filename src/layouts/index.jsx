@@ -1,14 +1,17 @@
+import { Outlet } from "react-router-dom";
+
 import NavBar from "./NavBar";
 import SideBar from "./SideBar";
-import { Outlet } from "react-router-dom";
+import TopBar from "./TopBar";
+import EditBar from "./EditBar";
 
 const MainLyt = () => {
   return (
     <>
-      <NavBar />
-      <SideBar />
-      <p>Hello World!</p>
-
+      {/* <NavBar /> */}
+      {/* <SideBar /> */}
+      <TopBar />
+      <EditBar />
       <Outlet />
     </>
   );
