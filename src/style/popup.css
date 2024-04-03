@@ -1,0 +1,333 @@
+html {
+  height: fit-content;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+label {
+  font-size: 1.5rem;
+}
+
+body::-webkit-scrollbar-track {
+  background: black;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #0ae1e1;
+  border-radius: 20px;
+  border: 3px solid darkslategrey;
+}
+
+body {
+  -ms-overflow-style: none;
+  margin: 0px !important;
+  scrollbar-width: none;
+  overflow: hidden;
+  height: inherit !important;
+  width: inherit !important;
+  font-weight: normal !important;
+  font-family: Roboto !important;
+  font-size: small !important;
+  letter-spacing: 0 !important;
+}
+
+.facebook-icon,
+.google-icon {
+  width: 20px;
+  /* Adjust the width and height as per your icon */
+  height: 20px;
+  margin-right: 10px;
+}
+
+.facebook-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #4267b2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.facebook-button:hover {
+  background-color: #3b5998;
+}
+
+.facebook-button:active {
+  background-color: #314c86;
+}
+
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #db4437;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.google-button:hover {
+  background-color: #c32f24;
+}
+
+.google-button:active {
+  background-color: #a6241f;
+}
+
+.MuiFormLabel-root.Mui-focused,
+.MuiOutlinedInput-notchedOutline {
+  color: #7c4dff !important;
+  border-color: #7c4dff !important;
+}
+
+.MuiButton-containedPrimary {
+  background-color: #7c4dff !important;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 16px;
+}
+
+a {
+  color: #7c4dff !important;
+}
+
+h3 {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+  color: gold;
+}
+
+#email-form {
+  margin: 1rem;
+}
+
+.space-evenly-flex {
+  padding-top: 5px;
+  display: flex;
+  font-size: small;
+  justify-content: space-evenly;
+}
+
+.justify-center {
+  display: flex;
+  justify-content: center;
+}
+
+div.right {
+  float: right;
+  text-align: -webkit-right;
+  vertical-align: middle;
+  width: 46%;
+  margin-right: 50px;
+}
+
+div.price-right {
+  float: right;
+  text-align: -webkit-right;
+  vertical-align: middle;
+  width: 35%;
+  margin-right: 10px;
+}
+
+div.left {
+  float: left;
+  text-align: -webkit-left;
+  vertical-align: middle;
+  width: 75%;
+  margin-left: 21px;
+}
+
+input {
+  color: gold;
+}
+
+input:focus {
+  border-color: gold !important;
+}
+
+.logo {
+  width: 50%;
+}
+
+.custom_button {
+  background-color: #c89626;
+  border: 0.1rem solid #282828;
+  margin-bottom: 3px;
+  line-height: 1rem;
+  margin-top: 9px;
+  height: 31px;
+  margin-left: 23%;
+  padding: 0px 1rem;
+  width: -webkit-fill-available;
+  margin: inherit;
+}
+
+.custom_button:hover {
+  background-color: #282828;
+  border-color: #ffd700;
+}
+
+.dropbtn {
+  padding: 0px 1rem;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin-bottom: -7px;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+}
+
+.approvedRow {
+  background: greenyellow;
+  color: green;
+}
+
+.deniedRow {
+  background: darkred;
+  color: #ff006a;
+}
+
+.notedRow {
+  background: #b2fffa;
+  color: black;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+th,
+td {
+  text-align: center;
+}
+
+td:last-child,
+th:last-child {
+  padding-right: 15px !important;
+}
+
+td:first-child,
+th:first-child {
+  padding-left: 15px !important;
+}
+
+
+
+.Appp {
+  height: 30rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 20rem;
+  width: 100%;
+  border-radius: 5px;
+
+  padding: 10px;
+}
+
+
+
+.gr {
+  color: #88e988;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.Header {
+  background: white;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.P_ {
+  padding: 10px;
+}
+
+.Img {
+  width: 100%;
+  border-radius: 5px;
+  height: 75rem;
+}
+
+.btn_One {
+  color: white;
+  background: red;
+  border: none;
+  border-radius: 5px;
+  /* padding: 15px; */
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+
+.Sc {
+  background-color: #2196f3;
+}
+
+.ScC {
+  color: #2196f3;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.btnCont {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}

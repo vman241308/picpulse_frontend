@@ -1,0 +1,58 @@
+.video-js {
+  height: 70vh;
+}
+.video-placeholder {
+  width: 81%;
+  height: 70vh;
+  background-color: white;
+  /* margin-bottom: 30px; */
+}
+.video-container {
+  width: 100%;
+  display: flex;
+  margin-top: 0px !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.dropzone-style {
+  border: 2px dashed #90caf9; /* Custom border color */
+  border-radius: 10px; /* Rounded corners */
+  background-color: #e3f2fd; /* Light background color */
+  padding: 20px; /* Spacing inside dropzone */
+}
+
+.previewChip {
+  margin: 10px; /* Spacing around preview chips */
+}
+
+/*OPTION*/
+.css-19kzrtu {
+  padding: 0px !important;
+}
+
+.MuiTabPanel-root.css-13xfq8m-MuiTabPanel-root {
+  padding: 0 !important;
+}
+
+.MuiDialogContent-root.css-ypiqx9-MuiDialogContent-root {
+  padding-bottom: 0 !important;
+}
+
+.MuiDialogActions-root.MuiDialogActions-spacing.css-knqc4i-MuiDialogActions-root {
+  padding: 0 20px 10px !important;
+}
+
+.css-1lizpae-MuiImageListItemBar-titleWrap {
+  padding: 4 6 !important;
+}
+
+.MuiTabs-indicator.css-11yukd5-MuiTabs-indicator {
+  background-color: #666666 !important;
+}
+
+.moveable-control-box {
+  z-index: 1 !important;
+}
+.moveable-line {
+  z-index: 1 !important;
+}

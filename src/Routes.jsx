@@ -1,41 +1,12 @@
-import MainLyt from "./layouts";
-import Error404 from "./pages/error/404";
-import Home from "./pages/home";
-import SignIn from "./pages/auth/signIn";
-import SignUp from "./pages/auth/signUp";
-import VerificationCode from "./pages/auth/verificationCode";
-import ForgotPwd from "./pages/auth/forgotPwd";
+// import MainLyt from "./layouts";
+// import Error404 from "./pages/error/404";
+import React from "react";
+import Editor from "./Pages/Editor";
 
 const Routes = [
   {
     path: "/",
-    element: <MainLyt />,
-    children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-    ],
-  },
-  {
-    path: "signin",
-    element: <SignIn />,
-  },
-  {
-    path: "signup",
-    element: <SignUp />,
-  },
-  {
-    path: "verification",
-    element: <VerificationCode />,
-  },
-  {
-    path: "forgot",
-    element: <ForgotPwd />,
-  },
-  {
-    path: "*",
-    element: <Error404 />,
+    element: <Editor />,
   },
 ];
 
