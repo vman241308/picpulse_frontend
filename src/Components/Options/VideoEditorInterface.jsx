@@ -159,14 +159,12 @@ function VideoEditorInterface({
               Math.abs(timeline.width * Math.sin(radians));
 
             let rotateOverlay = `,rotate=${radians}:c=black@0:ow=${rotatedW}:oh=${rotatedH}`;
-            let resizeOverlay = `[${overlayIndex + 1}:v]scale=${
-              timeline.width
-            }:${timeline.height}${rotateOverlay}[scaled${overlayIndex + 1}];`; //<---THIS WORKS, rotation is breaking it
+            let resizeOverlay = `[${overlayIndex + 1}:v]scale=${timeline.width
+              }:${timeline.height}${rotateOverlay}[scaled${overlayIndex + 1}];`; //<---THIS WORKS, rotation is breaking it
             let chainStart =
               overlayIndex > 0
-                ? `${resizeOverlay}[v${overlayIndex}][scaled${
-                    overlayIndex + 1
-                  }]`
+                ? `${resizeOverlay}[v${overlayIndex}][scaled${overlayIndex + 1
+                }]`
                 : `${resizeOverlay}[0:v][scaled${overlayIndex + 1}]`;
 
             let chainSuffix;
@@ -189,64 +187,68 @@ function VideoEditorInterface({
     try {
       overlayPositions.length > 0
         ? (ffmpegCommand = [
-            "-stream_loop",
-            "-1",
-            "-i",
-            `${videoFile}`,
-            // Include each overlay as an input
-            ...overlayPositions
-              .filter(
-                (overlay, index, self) =>
-                  index ===
-                  self.findIndex(
-                    (o) => o.fileNameFFMPEG === overlay.fileNameFFMPEG
-                  )
-              )
-              .map((overlay) => [
-                "-stream_loop",
-                "-1",
-                "-i",
-                overlay.overlayPath,
-              ])
-              .flat(),
-            "-filter_complex",
-            `${generateOverlayFilters()}`,
-            "-map",
-            `[out]`,
-            "-r",
-            "30",
-            "-c:a",
-            "copy",
-            "-t",
-            `${duration}`,
-            "-preset",
-            "ultrafast",
-            `output_${fileName}.mp4`,
-          ])
+          "-stream_loop",
+          "-1",
+          "-i",
+          `${videoFile}`,
+          // Include each overlay as an input
+          ...overlayPositions
+            .filter(
+              (overlay, index, self) =>
+                index ===
+                self.findIndex(
+                  (o) => o.fileNameFFMPEG === overlay.fileNameFFMPEG
+                )
+            )
+            .map((overlay) => [
+              "-stream_loop",
+              "-1",
+              "-i",
+              overlay.overlayPath,
+            ])
+            .flat(),
+          "-filter_complex",
+          `${generateOverlayFilters()}`,
+          "-map",
+          `[out]`,
+          "-r",
+          "30",
+          "-c:a",
+          "copy",
+          "-t",
+          `${duration}`,
+          "-preset",
+          "ultrafast",
+          `output_${fileName}.mp4`,
+        ])
         : (ffmpegCommand = [
-            "-i",
-            `${videoFile}`,
-            "-c:a",
-            "copy",
-            "-t",
-            `${duration}`,
-            "-preset",
-            "ultrafast",
-            `output_${fileName}.mp4`,
-          ]);
+          "-i",
+          `${videoFile}`,
+          "-c:a",
+          "copy",
+          "-t",
+          `${duration}`,
+          "-preset",
+          "ultrafast",
+          `output_${fileName}.mp4`,
+        ]);
     } catch (error) {
       return;
     }
 
     console.log("~~~~~~~~~~~~~~~~~~~~~", ffmpegCommand);
-
-    await axios
-      .post(`http://localhost:4000/api/editor/`, {
-        command: ffmpegCommand,
-      })
-      .then((res) => {
-        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`", res.data);
-      });
+    try {
+      await axios
+        .post(`http://3.143.204.91:4000/api/editor`, {
+          command: ffmpegCommand,
+        })
+        .then((res) => {
+          console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`", res.data);
+        });
+    }
+    catch (error) {
+      console.log('error::', error)
+    }
 
     // Create a link element for downloading the image
     // const a = document.createElement("a");

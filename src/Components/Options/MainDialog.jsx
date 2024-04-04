@@ -36,10 +36,10 @@ export const MainDialog = ({
     setBgData(result?.data.data);
     setBgLoading(false);
   };
-  
+
   const fetchBgList = async () => {
     const result = await axios(
-        `http://18.218.107.206/greenscreen/public/service.php?type=get_assets`
+      `http://18.218.107.206/greenscreen/public/service.php?type=get_assets`
     )
     console.log('bglist::', result.data.data)
     localStorage.setItem("BgList", JSON.stringify(result.data.data));
@@ -56,7 +56,10 @@ export const MainDialog = ({
   useEffect(() => {
     fetchBgCategory();
     fetchFgCategory();
-    fetchBgList()
+    if (!localStorage.getItem('BgList')) {
+      fetchBgList()
+    }
+
   }, []);
 
   useEffect(() => {
@@ -99,7 +102,7 @@ export const MainDialog = ({
             style={{ cursor: "pointer" }}
           >
             {localStorage.getItem("subscriptionData") &&
-            JSON.parse(localStorage.getItem("subscriptionData")).data.length > 0
+              JSON.parse(localStorage.getItem("subscriptionData")).data.length > 0
               ? "Restore Purchases"
               : ""}
           </Box>
