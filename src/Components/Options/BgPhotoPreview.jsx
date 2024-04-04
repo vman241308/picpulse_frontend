@@ -32,12 +32,29 @@ export const BgPhotoPreview = ({
   const loader = useRef();
 
   const fetchData = async () => {
-    const result = await axios(
-      `http://18.218.107.206/greenscreen/public/service.php?type=get_assets&category_id=${selectedCategory.id}`
-    );
-    const imageData = result.data.data.filter(
-      (item) => item.s3_url.endsWith(".jpg") || item.s3_url.endsWith(".png")
-    );
+    // const result = await axios(
+    //   `http://18.218.107.206/greenscreen/public/service.php?type=get_assets&category_id=${selectedCategory.id}`
+    // );
+    // const imageData = result.data.data.filter(
+    //   (item) => item.s3_url.endsWith(".jpg") || item.s3_url.endsWith(".png")
+    // );
+    var result = [];
+    var imageData = [];
+    if (localStorage.getItem('BgList')) {
+        result = JSON.parse(localStorage.getItem("BgList"));
+        imageData = result.filter((item) =>
+            (item.s3_url.endsWith(".jpg") || item.s3_url.endsWith(".png")) &&
+            item.category_id == selectedCategory.id
+        );
+      } else {
+        result = await axios(
+          `http://18.218.107.206/greenscreen/public/service.php?type=get_assets`
+        );
+        imageData = result.data.data.filter((item) =>
+            (item.s3_url.endsWith(".jpg") || item.s3_url.endsWith(".png")) &&
+            item.category_id == selectedCategory.id
+        );
+      }
     setData(imageData);
     setLoading(false);
   };

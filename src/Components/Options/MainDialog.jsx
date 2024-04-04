@@ -29,15 +29,23 @@ export const MainDialog = ({
   const [BgLoading, setBgLoading] = useState(true);
   const [FgLoading, setFgLoading] = useState(true);
 
-  const fetchBgData = async () => {
+  const fetchBgCategory = async () => {
     const result = await axios(
       "http://18.218.107.206/greenscreen/public/service.php?type=get_category"
     );
     setBgData(result?.data.data);
     setBgLoading(false);
   };
+  
+  const fetchBgList = async () => {
+    const result = await axios(
+        `http://18.218.107.206/greenscreen/public/service.php?type=get_assets`
+    )
+    console.log('bglist::', result.data.data)
+    localStorage.setItem("BgList", JSON.stringify(result.data.data));
+  }
 
-  const fetchFgData = async () => {
+  const fetchFgCategory = async () => {
     const result = await axios(
       "http://18.218.107.206/greenscreen/public/service.php?type=get_foreground_category"
     );
@@ -46,8 +54,9 @@ export const MainDialog = ({
   };
 
   useEffect(() => {
-    fetchBgData();
-    fetchFgData();
+    fetchBgCategory();
+    fetchFgCategory();
+    fetchBgList()
   }, []);
 
   useEffect(() => {
@@ -106,9 +115,9 @@ export const MainDialog = ({
           tabIndex={-1}
         >
           <Box sx={{ flexGrow: 1 }}>
-            <div className="min-w-52 font-sans text-lg">
+            <div className="font-sans text-lg min-w-52">
               {groundType == "bg" ? (
-                <div className="flex flex-col text-left w-full">
+                <div className="flex flex-col w-full text-left">
                   <Box component="span">Backgrounds</Box>
                   <TextField
                     label={"search"}
@@ -130,7 +139,7 @@ export const MainDialog = ({
                   />
                 </div>
               ) : (
-                <div className="flex flex-col text-left w-full">
+                <div className="flex flex-col w-full text-left">
                   <Box component="span">Foregrounds</Box>
                   <TextField
                     label={"search"}

@@ -32,18 +32,29 @@ export const BgVideoPreview = ({
   const loader = useRef();
 
   const fetchData = async () => {
+    console.log('bgvideopreview_selectedCategory', selectedCategory)
     var result = [];
     var videoData = [];
     if (localStorage.getItem("SelectedCategoryId") == selectedCategory.id) {
       result = JSON.parse(localStorage.getItem("SelectedCategoryData"));
       setData(result);
     } else {
-      result = await axios(
-        `http://18.218.107.206/greenscreen/public/service.php?type=get_assets&category_id=${selectedCategory.id}`
-      );
-      videoData = result.data.data.filter((item) =>
-        item.s3_url.endsWith(".mp4")
-      );
+      if (localStorage.getItem('BgList')) {
+        result = JSON.parse(localStorage.getItem("BgList"));
+        videoData = result.filter((item) =>
+            (item.s3_url.endsWith(".mp4") || item.s3_url.endsWith(".mov")) &&
+            item.category_id == selectedCategory.id
+        );
+      } else {
+        result = await axios(
+          `http://18.218.107.206/greenscreen/public/service.php?type=get_assets`
+        );
+        videoData = result.data.data.filter((item) =>
+            (item.s3_url.endsWith(".mp4") || item.s3_url.endsWith(".mov")) &&
+            item.category_id == selectedCategory.id
+        );
+      }
+      
       setData(videoData);
       localStorage.setItem("SelectedCategoryId", selectedCategory.id);
       localStorage.setItem("SelectedCategoryData", JSON.stringify(videoData));
