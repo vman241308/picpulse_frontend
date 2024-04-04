@@ -7,9 +7,7 @@ import { Main } from "./Main.jsx";
 const VideoEditor = () => {
   const [videoFile, setVideoFile] = useState({ url: null, type: null });
   const [overlays, setOverlays] = useState([]);
-  const [isDarkMode, setDarkMode] = useState(false);
-  const videoRef = useRef(null);
-  const imageRef = useRef(null);
+  const bgRef = useRef(null);
   const playerRef = useRef(null);
 
   return (
@@ -20,7 +18,7 @@ const VideoEditor = () => {
           <VideoEditorInterface
             backgroundType={videoFile.type}
             videoFile={videoFile.url}
-            videoRef={videoRef}
+            bgRef={bgRef}
             overlays={overlays}
             playerRef={playerRef}
             setOverlays={setOverlays}

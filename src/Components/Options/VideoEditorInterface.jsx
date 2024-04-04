@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
 
 import videojs from "video.js";
@@ -13,7 +13,7 @@ let recordingEndTime = 0;
 function VideoEditorInterface({
   backgroundType,
   videoFile,
-  videoRef,
+  bgRef,
   overlays,
   playerRef,
   setOverlays,
@@ -22,26 +22,6 @@ function VideoEditorInterface({
   const [scaleY, setScaleY] = useState(1); // Vertical scaling factor
   const [recordingStatus, setRecordingStatus] = useState();
   const [overlayPositions, setOverlayPositions] = useState([]);
-
-  useEffect(() => {
-    if (videoRef.current) {
-      playerRef.current = videojs(videoRef.current, {
-        controls: true,
-        autoplay: false,
-        preload: "auto",
-        loop: true,
-      });
-
-      videoRef.current.addEventListener("loadedmetadata", handleMetadataLoaded);
-    }
-    // const bounds = videoRef.current.getBoundingClientRect();
-    // setVideoBounds(bounds);
-    return () => {
-      if (playerRef.current) {
-        playerRef.current.dispose();
-      }
-    };
-  }, [videoRef, playerRef]);
 
   useEffect(() => {
     if (recordingStatus === undefined) return;
@@ -81,25 +61,33 @@ function VideoEditorInterface({
     });
   }, [overlays]);
 
-  const handleMetadataLoaded = useCallback(() => {
-    const videoElement = videoRef.current;
-    if (videoElement) {
-      const originalWidth = videoElement.videoWidth;
-      const originalHeight = videoElement.videoHeight;
+  const handleMetadataLoaded = () => {
+    const bgElement = bgRef.current;
+    let originalWidth;
+    let originalHeight;
+
+    if (bgElement) {
+      if (backgroundType === "video") {
+        originalWidth = bgElement.videoWidth;
+        originalHeight = bgElement.videoHeight;
+      } else {
+        originalWidth = bgElement.naturalWidth;
+        originalHeight = bgElement.naturalHeight;
+      }
 
       const aspectRatio = originalWidth / originalHeight;
       const containerHeight = window.innerHeight * 0.7; // 70vh
       const newWidth = containerHeight * aspectRatio;
 
-      videoElement.parentElement.style.width = `${newWidth}px`;
+      bgElement.parentElement.style.width = `${newWidth}px`;
 
-      const renderedWidth = videoElement.clientWidth;
-      const renderedHeight = videoElement.clientHeight;
+      const renderedWidth = bgElement.clientWidth;
+      const renderedHeight = bgElement.clientHeight;
 
       setScaleX(originalWidth / renderedWidth);
       setScaleY(originalHeight / renderedHeight);
     }
-  }, [videoFile]);
+  };
 
   const handleMovement = async (
     overlayPath,
@@ -250,6 +238,8 @@ function VideoEditorInterface({
       return;
     }
 
+    console.log("~~~~~~~~~~~~~~~~~~~~~", ffmpegCommand);
+
     await axios
       .post(`http://localhost:4000/api/editor/`, {
         command: ffmpegCommand,
@@ -274,20 +264,24 @@ function VideoEditorInterface({
       <div className="w-full h-full flex items-center justify-center absolute">
         {backgroundType === "video" ? (
           <video
+            ref={bgRef}
             loop
             autoPlay
             className="h-[95%] w-auto video-js"
             id="video-js"
             crossOrigin="anonymous"
+            onLoadedMetadata={handleMetadataLoaded}
           >
             <source src={videoFile} type="video/mp4" />
           </video>
         ) : (
           <img
+            ref={bgRef}
             src={videoFile}
             className="h-[95%] w-auto video-js"
             id="video-js"
             crossOrigin="anonymous"
+            onLoad={handleMetadataLoaded}
           ></img>
         )}
 
