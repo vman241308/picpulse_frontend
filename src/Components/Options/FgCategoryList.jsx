@@ -18,8 +18,9 @@ export const FgCategoryList = ({
   FgData,
   FgLoading,
 }) => {
+  console.log('fgCategorylist::', FgData)
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 100;
   const loader = useRef();
 
   const lastItemElementRef = useCallback(
