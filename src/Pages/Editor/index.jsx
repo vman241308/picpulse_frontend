@@ -28,7 +28,7 @@ function Editor() {
           position: "fixed",
           width: "100vw",
           height: "100vh",
-          backgroundColor: "rgba(0,0,0)",
+          backgroundColor: "rgba(10,10,10, 82%)",
           zIndex: 999,
           display: `${isLoading ? "flex" : "none"}`,
           alignItems: "center",

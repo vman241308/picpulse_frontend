@@ -87,7 +87,6 @@ export const Main = ({ setVideoFile, setOverlays }) => {
         file.name.split(".").pop();
       videoFileS3Key = videoFileS3Key.replaceAll(" ", "_");
 
-      console.log("https://picpulsemedia.s3.amazonaws.com/" + videoFileS3Key);
       EventBus.dispatch("setLoading", true);
       await axios
         .post(
@@ -111,7 +110,10 @@ export const Main = ({ setVideoFile, setOverlays }) => {
               type: "image",
             });
           } else {
-            setVideoFile({ url: videoFileS3Key, type: "video" });
+            setVideoFile({
+              url: "https://picpulsemedia.s3.amazonaws.com/" + videoFileS3Key,
+              type: "video",
+            });
           }
           EventBus.dispatch("setLoading", false);
         });
@@ -135,10 +137,8 @@ export const Main = ({ setVideoFile, setOverlays }) => {
         new Date().getTime() +
         "." +
         file.name.split(".").pop();
-      
-      overlayFileS3Key = overlayFileS3Key.replaceAll(" ", "_");
 
-      console.log("https://picpulsemedia.s3.amazonaws.com/" + overlayFileS3Key);
+      overlayFileS3Key = overlayFileS3Key.replaceAll(" ", "_");
 
       EventBus.dispatch("setLoading", true);
       await axios

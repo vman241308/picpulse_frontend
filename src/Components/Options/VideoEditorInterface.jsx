@@ -254,7 +254,7 @@ function VideoEditorInterface({
       .post(`http://localhost:4000/api/editor/`, {
         command: ffmpegCommand,
         bg: videoFile,
-        overlays: overlays
+        overlays: overlays,
       })
       .then((res) => {
         console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`", res.data);

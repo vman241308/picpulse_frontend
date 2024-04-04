@@ -60,7 +60,7 @@ export const BgCategoryList = ({
           },
         }}
       />
-      <ImageList sx={{ width: 1, height: 600 }}>
+      <ImageList sx={{ width: 1, height: 600 }} cols={4}>
         {BgData.map((item, index) => (
           <Box
             sx={{

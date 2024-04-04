@@ -67,7 +67,7 @@ export const FgCategoryList = ({
   };
 
   return (
-    <ImageList sx={{ width: 1, height: 600 }}>
+    <ImageList sx={{ width: 1, height: 600 }} cols={4}>
       {FgData.slice(0, currentPage * itemsPerPage).map((item, index, self) => (
         <Box
           key={index}

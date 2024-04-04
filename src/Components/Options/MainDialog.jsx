@@ -47,7 +47,7 @@ export const MainDialog = ({
 
   useEffect(() => {
     fetchBgData();
-    fetchFgData()
+    fetchFgData();
   }, []);
 
   useEffect(() => {
