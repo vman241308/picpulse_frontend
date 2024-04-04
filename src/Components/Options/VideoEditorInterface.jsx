@@ -204,7 +204,7 @@ function VideoEditorInterface({
             "-stream_loop",
             "-1",
             "-i",
-            `input_${fileName}.mp4`,
+            `${videoFile}`,
             // Include each overlay as an input
             ...overlayPositions
               .filter(
@@ -218,7 +218,7 @@ function VideoEditorInterface({
                 "-stream_loop",
                 "-1",
                 "-i",
-                overlay.fileNameFFMPEG,
+                overlay.overlayPath,
               ])
               .flat(),
             "-filter_complex",
@@ -237,7 +237,7 @@ function VideoEditorInterface({
           ])
         : (ffmpegCommand = [
             "-i",
-            `input_${fileName}.mp4`,
+            `${videoFile}`,
             "-c:a",
             "copy",
             "-t",
@@ -253,8 +253,6 @@ function VideoEditorInterface({
     await axios
       .post(`http://localhost:4000/api/editor/`, {
         command: ffmpegCommand,
-        bg: videoFile,
-        overlays: overlays,
       })
       .then((res) => {
         console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`", res.data);
