@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
 import VideoEditorInterface from "./VideoEditorInterface.jsx";
-import ImageEditorInterface from "./ImageEditorInterface.jsx";
 
 import { Main } from "./Main.jsx";
 
