@@ -13,6 +13,8 @@ import { BackgroundDialog } from "./BackgroundDialog.jsx";
 
 import backgroundImage from "@/assets/icons/background_ico.png";
 import forgroundImage from "@/assets/icons/forground_ico.png";
+import axios from "axios";
+import EventBus from "../../utils/EventBus.jsx";
 
 const screenRatio = ["16:9", "1:1", "4:3"];
 
@@ -73,16 +75,46 @@ export const Main = ({ setVideoFile, setOverlays }) => {
     }
   }, [open]);
 
-  const onBgSelect = (e) => {
+  const onBgSelect = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     if (file.type.startsWith("video/") || file.type.startsWith("image/")) {
-      const videoUrl = URL.createObjectURL(file);
-      if (file.type.startsWith("image/")) {
-        setVideoFile({ url: videoUrl, type: "image" });
-      } else {
-        setVideoFile({ url: videoUrl, type: "video" });
-      }
+      let videoFileS3Key =
+        file.name.split(".").slice(0, -1).join(".") +
+        "-" +
+        new Date().getTime() +
+        "." +
+        file.name.split(".").pop();
+      videoFileS3Key = videoFileS3Key.replaceAll(" ", "_");
+
+      console.log("https://picpulsemedia.s3.amazonaws.com/" + videoFileS3Key);
+      EventBus.dispatch("setLoading", true);
+      await axios
+        .post(
+          `https://6ryr2wliwk.execute-api.us-east-2.amazonaws.com/product/presignedURL`,
+          {
+            fileKey: videoFileS3Key,
+          }
+        )
+        .then(async (res) => {
+          const signedUrl = res.data.signedUrl;
+
+          await fetch(signedUrl, {
+            method: "PUT",
+            body: file,
+          });
+
+          // const videoUrl = URL.createObjectURL(file);
+          if (file.type.startsWith("image/")) {
+            setVideoFile({
+              url: "https://picpulsemedia.s3.amazonaws.com/" + videoFileS3Key,
+              type: "image",
+            });
+          } else {
+            setVideoFile({ url: videoFileS3Key, type: "video" });
+          }
+          EventBus.dispatch("setLoading", false);
+        });
     } else {
       console.error("Please upload a valid video file.");
     }
@@ -93,28 +125,44 @@ export const Main = ({ setVideoFile, setOverlays }) => {
     // });
   };
 
-  const onFgSelect = (event) => {
-    const files = Array.from(event.target.files);
+  const onFgSelect = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.type.startsWith("image/")) {
+      let overlayFileS3Key =
+        file.name.split(".").slice(0, -1).join(".") +
+        "-" +
+        new Date().getTime() +
+        "." +
+        file.name.split(".").pop();
+      
+      overlayFileS3Key = overlayFileS3Key.replaceAll(" ", "_");
 
-    if (files.length === 0) return;
-    //only get name of file in array
-    const overlaysFileNames = files.map((file) => file.name);
-    //filter Out Already Added Overlays
-    const uniqueOverlays = overlaysFileNames.filter(
-      (overlay) => !addedOverlays.includes(overlay)
-    );
-    let newOverlayURLs = [];
-    files.forEach((file) => {
-      if (uniqueOverlays.includes(file.name)) {
-        newOverlayURLs.push(URL.createObjectURL(file));
-      }
-    });
+      console.log("https://picpulsemedia.s3.amazonaws.com/" + overlayFileS3Key);
 
-    setOverlays((prevOverlays) => [...prevOverlays, ...newOverlayURLs]);
-    setAddedOverlays((prevAddedOverlays) => [
-      ...prevAddedOverlays,
-      ...uniqueOverlays,
-    ]);
+      EventBus.dispatch("setLoading", true);
+      await axios
+        .post(
+          `https://6ryr2wliwk.execute-api.us-east-2.amazonaws.com/product/presignedURL`,
+          {
+            fileKey: overlayFileS3Key,
+          }
+        )
+        .then(async (res) => {
+          const signedUrl = res.data.signedUrl;
+          await fetch(signedUrl, {
+            method: "PUT",
+            body: file,
+          });
+          setOverlays((prevOverlays) => [
+            ...prevOverlays,
+            "https://picpulsemedia.s3.amazonaws.com/" + overlayFileS3Key,
+          ]);
+          EventBus.dispatch("setLoading", false);
+        });
+    } else {
+      console.error("Please upload a valid video file.");
+    }
   };
 
   return (
@@ -188,8 +236,7 @@ export const Main = ({ setVideoFile, setOverlays }) => {
             <input
               type="file"
               className="absolute inset-0 w-full h-full cursor-pointer opacity-0"
-              accept="image/*,video/*"
-              multiple
+              accept="image/*"
               onChange={onFgSelect}
             />
           </label>

@@ -29,7 +29,7 @@ const Header = () => {
     const formJson = Object.fromEntries(formData.entries());
     const email = formJson.email;
     const response = await fetch(
-      `http://18.218.107.206/greenscreen/public/api.php?type=check_email&email=${email}`
+      `http://18.218.107.206/greenscreen/public/service.php?type=check_email&email=${email}`
     );
 
     if (response.ok) {

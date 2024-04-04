@@ -40,7 +40,7 @@ export const FgPreview = ({
       setData(result);
     } else {
       result = await axios(
-        `http://18.218.107.206/greenscreen/public/api.php?type=get_foreground_assets&category_id=${selectedCategory.id}`
+        `http://18.218.107.206/greenscreen/public/service.php?type=get_foreground_assets&category_id=${selectedCategory.id}`
       );
       overlayData = result.data.data;
       setData(overlayData);

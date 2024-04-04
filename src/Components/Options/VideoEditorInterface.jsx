@@ -253,9 +253,11 @@ function VideoEditorInterface({
     await axios
       .post(`http://localhost:4000/api/editor/`, {
         command: ffmpegCommand,
+        bg: videoFile,
+        overlays: overlays
       })
       .then((res) => {
-        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`", res.data.command);
+        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`", res.data);
       });
 
     // Create a link element for downloading the image
@@ -278,6 +280,7 @@ function VideoEditorInterface({
             autoPlay
             className="h-[95%] w-auto video-js"
             id="video-js"
+            crossOrigin="anonymous"
           >
             <source src={videoFile} type="video/mp4" />
           </video>
@@ -286,12 +289,14 @@ function VideoEditorInterface({
             src={videoFile}
             className="h-[95%] w-auto video-js"
             id="video-js"
+            crossOrigin="anonymous"
           ></img>
         )}
 
         {videoFile &&
           overlays?.map((image, index) => (
             <Image
+              key={index}
               image={image}
               index={index}
               handleMovement={handleMovement}

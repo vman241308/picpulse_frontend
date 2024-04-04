@@ -33,7 +33,7 @@ export const BgPhotoPreview = ({
 
   const fetchData = async () => {
     const result = await axios(
-      `http://18.218.107.206/greenscreen/public/api.php?type=get_assets&category_id=${selectedCategory.id}`
+      `http://18.218.107.206/greenscreen/public/service.php?type=get_assets&category_id=${selectedCategory.id}`
     );
     const imageData = result.data.data.filter(
       (item) => item.s3_url.endsWith(".jpg") || item.s3_url.endsWith(".png")

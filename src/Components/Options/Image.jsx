@@ -63,6 +63,7 @@ function Image({
         onDoubleClick={() => {
           removeOverlay(image);
         }}
+        crossOrigin="anonymous"
       />
       <Moveable
         target={targetRef}

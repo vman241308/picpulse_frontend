@@ -31,7 +31,7 @@ export const MainDialog = ({
 
   const fetchBgData = async () => {
     const result = await axios(
-      "http://18.218.107.206/greenscreen/public/api.php?type=get_category"
+      "http://18.218.107.206/greenscreen/public/service.php?type=get_category"
     );
     setBgData(result?.data.data);
     setBgLoading(false);
@@ -39,15 +39,15 @@ export const MainDialog = ({
 
   const fetchFgData = async () => {
     const result = await axios(
-      "http://18.218.107.206/greenscreen/public/api.php?type=get_foreground_category"
+      "http://18.218.107.206/greenscreen/public/service.php?type=get_foreground_category"
     );
     setFgData(result.data.data);
     setFgLoading(false);
   };
 
   useEffect(() => {
-    // fetchBgData();
-    // fetchFgData()
+    fetchBgData();
+    fetchFgData()
   }, []);
 
   useEffect(() => {
