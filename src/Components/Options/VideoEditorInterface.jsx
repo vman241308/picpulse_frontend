@@ -159,12 +159,14 @@ function VideoEditorInterface({
               Math.abs(timeline.width * Math.sin(radians));
 
             let rotateOverlay = `,rotate=${radians}:c=black@0:ow=${rotatedW}:oh=${rotatedH}`;
-            let resizeOverlay = `[${overlayIndex + 1}:v]scale=${timeline.width
-              }:${timeline.height}${rotateOverlay}[scaled${overlayIndex + 1}];`; //<---THIS WORKS, rotation is breaking it
+            let resizeOverlay = `[${overlayIndex + 1}:v]scale=${
+              timeline.width
+            }:${timeline.height}${rotateOverlay}[scaled${overlayIndex + 1}];`; //<---THIS WORKS, rotation is breaking it
             let chainStart =
               overlayIndex > 0
-                ? `${resizeOverlay}[v${overlayIndex}][scaled${overlayIndex + 1
-                }]`
+                ? `${resizeOverlay}[v${overlayIndex}][scaled${
+                    overlayIndex + 1
+                  }]`
                 : `${resizeOverlay}[0:v][scaled${overlayIndex + 1}]`;
 
             let chainSuffix;
@@ -187,51 +189,52 @@ function VideoEditorInterface({
     try {
       overlayPositions.length > 0
         ? (ffmpegCommand = [
-          "-stream_loop",
-          "-1",
-          "-i",
-          `${videoFile}`,
-          // Include each overlay as an input
-          ...overlayPositions
-            .filter(
-              (overlay, index, self) =>
-                index ===
-                self.findIndex(
-                  (o) => o.fileNameFFMPEG === overlay.fileNameFFMPEG
-                )
-            )
-            .map((overlay) => [
-              "-stream_loop",
-              "-1",
-              "-i",
-              overlay.overlayPath,
-            ])
-            .flat(),
-          "-filter_complex",
-          `${generateOverlayFilters()}`,
-          "-map",
-          `[out]`,
-          "-r",
-          "30",
-          "-c:a",
-          "copy",
-          "-t",
-          `${duration}`,
-          "-preset",
-          "ultrafast",
-          `output_${fileName}.mp4`,
-        ])
+            "-hwaccel",
+            "cuda",
+            "-i",
+            `${videoFile}`,
+            // Include each overlay as an input
+            ...overlayPositions
+              .filter(
+                (overlay, index, self) =>
+                  index ===
+                  self.findIndex(
+                    (o) => o.fileNameFFMPEG === overlay.fileNameFFMPEG
+                  )
+              )
+              .map((overlay) => [
+                "-stream_loop",
+                "-1",
+                "-i",
+                overlay.overlayPath,
+              ])
+              .flat(),
+            "-filter_complex",
+            `${generateOverlayFilters()}`,
+            "-map",
+            `[out]`,
+            "-r",
+            "30",
+            "-an",
+            "-c:a",
+            "copy",
+            "-t",
+            `${duration}`,
+            "-c:v",
+            "h264_nvenc",
+            `./src/public/output_${fileName}.mp4`,
+          ])
         : (ffmpegCommand = [
-          "-i",
-          `${videoFile}`,
-          "-c:a",
-          "copy",
-          "-t",
-          `${duration}`,
-          "-preset",
-          "ultrafast",
-          `output_${fileName}.mp4`,
-        ]);
+            "-i",
+            `${videoFile}`,
+            "-c:a",
+            "copy",
+            "-t",
+            `${duration}`,
+            "-preset",
+            "ultrafast",
+            `output_${fileName}.mp4`,
+          ]);
     } catch (error) {
       return;
     }
@@ -241,13 +244,22 @@ function VideoEditorInterface({
       await axios
         .post(`http://3.143.204.91:4000/api/editor`, {
           command: ffmpegCommand,
+          fileName: `output_${fileName}.mp4`,
         })
-        .then((res) => {
-          console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`", res.data);
+        .then(async (res) => {
+          console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`", res.data.message);
+          const response = await fetch(res.data.message);
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = blobUrl;
+          const fileName = res.data.message.split("/").pop();
+          link.download = fileName;
+          link.click();
+          URL.revokeObjectURL(blobUrl);
         });
-    }
-    catch (error) {
-      console.log('error::', error)
+    } catch (error) {
+      console.log("error::", error);
     }
 
     // Create a link element for downloading the image
