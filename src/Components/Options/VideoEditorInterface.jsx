@@ -148,7 +148,6 @@ function VideoEditorInterface({
       (o) => o.overlayPath !== url
     );
     setOverlayPositions(newOverlayPositions);
-    console.log('newOverlayPositions::', newOverlayPositions)
   };
 
   const renderVideo = async (duration) => {
