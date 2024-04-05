@@ -68,6 +68,17 @@ function Image({
     );
   };
 
+  useEffect(() => {
+    let img = new window.Image();
+    img.onload = () => {
+      if (targetRef.current) {
+        targetRef.current.style.backgroundImage = `url(${img.src})`;
+      }
+    };
+    img.src = image;
+    handleMetadataLoaded();
+  }, [image]);
+
   return (
     <div
       style={{
@@ -88,7 +99,6 @@ function Image({
         onDoubleClick={() => {
           removeOverlay(image);
         }}
-        onLoad={handleMetadataLoaded}
       />
       <Moveable
         target={targetRef}
