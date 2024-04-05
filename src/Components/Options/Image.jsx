@@ -30,6 +30,7 @@ function Image({
       .querySelector(".video-js")
       .getBoundingClientRect();
 
+    console.log("~~~~~~~~~~~3", e);
     let rotation = rotationExtractAndRound(e.transform)
       ? rotationExtractAndRound(e.transform)
       : 0;
@@ -41,9 +42,28 @@ function Image({
       image,
       finalX,
       finalY,
-      (e.width || prevWidth) * scaleX,
-      (e.height || prevHeight) * scaleY,
+      targetRect.width * scaleX,
+      targetRect.height * scaleY,
       rotation
+    );
+  };
+
+  const handleMetadataLoaded = () => {
+    const targetRect = targetRef.current.getBoundingClientRect();
+    const parentRect = document
+      .querySelector(".video-js")
+      .getBoundingClientRect();
+
+    let finalX = (targetRect.left - parentRect.left) * scaleX;
+    let finalY = (targetRect.top - parentRect.top) * scaleY;
+
+    handleMovement(
+      image,
+      finalX,
+      finalY,
+      targetRef.current.clientWidth * scaleX,
+      targetRef.current.clientHeight * scaleY,
+      0
     );
   };
 
@@ -57,42 +77,47 @@ function Image({
       id={`draggable${index}`}
     >
       <img
-        className="target"
         ref={targetRef}
         src={image}
         onDoubleClick={() => {
           removeOverlay(image);
         }}
+        onLoad={handleMetadataLoaded}
       />
       <Moveable
         target={targetRef}
         draggable={true}
-        resizable={true}
-        originDraggable={true}
+        scalable={true}
         rotatable={true}
-        throttleDrag={1}
-        edgeDraggable={false}
-        startDragRotate={0}
-        throttleDragRotate={0}
-        throttleResize={1}
+        pinchable={true}
+        pinchOutside={true}
         renderDirections={["nw", "n", "ne", "w", "e", "sw", "s", "se"]}
-        onDrag={(e) => {
-          e.target.style.transform = e.transform;
+        // onDrag={(e) => {
+        //   e.target.style.transform = e.transform;
+        //   handleNewUserInteraction(e);
+        //   prevHeight = e.height;
+        //   prevWidth = e.width;
+        // }}
+        // onResize={(e) => {
+        //   e.target.style.width = `${e.width}px`;
+        //   e.target.style.height = `${e.height}px`;
+        //   e.target.style.transform = e.drag.transform;
+        //   handleNewUserInteraction(e);
+        //   prevHeight = e.height;
+        //   prevWidth = e.width;
+        // }}
+        // onRotate={(e) => {
+        //   e.target.style.transform = e.drag.transform;
+        //   handleNewUserInteraction(e);
+        // }}
+        onRender={(e) => {
           handleNewUserInteraction(e);
-          prevHeight = e.height;
-          prevWidth = e.width;
-        }}
-        onResize={(e) => {
+          // e.target.style.transform = e.drag.transform;
+          e.target.style.cssText += e.cssText;
           e.target.style.width = `${e.width}px`;
           e.target.style.height = `${e.height}px`;
-          e.target.style.transform = e.drag.transform;
-          handleNewUserInteraction(e);
           prevHeight = e.height;
           prevWidth = e.width;
-        }}
-        onRotate={(e) => {
-          e.target.style.transform = e.drag.transform;
-          handleNewUserInteraction(e);
         }}
       />
     </div>

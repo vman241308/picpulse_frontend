@@ -24,6 +24,12 @@ function VideoEditorInterface({
   const [overlayPositions, setOverlayPositions] = useState([]);
 
   useEffect(() => {
+    if (bgRef.current && backgroundType === "video") {
+      bgRef.current.load();
+    }
+  }, [videoFile]);
+
+  useEffect(() => {
     if (recordingStatus === undefined) return;
     if (recordingStatus) {
       recordingStartTime = new Date().getTime();
@@ -239,7 +245,7 @@ function VideoEditorInterface({
       return;
     }
 
-    // console.log(ffmpegCommand);
+    console.log(ffmpegCommand);
 
     try {
       await axios
@@ -277,9 +283,8 @@ function VideoEditorInterface({
             className="h-[95%] w-auto video-js"
             id="video-js"
             onLoadedMetadata={handleMetadataLoaded}
-          >
-            <source src={videoFile} type="video/mp4" />
-          </video>
+            src={videoFile}
+          />
         ) : (
           <img
             ref={bgRef}
