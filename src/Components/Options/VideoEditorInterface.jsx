@@ -283,7 +283,6 @@ function VideoEditorInterface({
             autoPlay
             className="h-[95%] w-auto video-js"
             id="video-js"
-            crossOrigin="anonymous"
             onLoadedMetadata={handleMetadataLoaded}
           >
             <source src={videoFile} type="video/mp4" />
@@ -294,7 +293,6 @@ function VideoEditorInterface({
             src={videoFile}
             className="h-[95%] w-auto video-js"
             id="video-js"
-            crossOrigin="anonymous"
             onLoad={handleMetadataLoaded}
           ></img>
         )}
