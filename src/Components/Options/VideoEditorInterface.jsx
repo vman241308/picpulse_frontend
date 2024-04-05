@@ -81,11 +81,11 @@ function VideoEditorInterface({
         originalHeight = bgElement.naturalHeight;
       }
 
-      const aspectRatio = originalWidth / originalHeight;
-      const containerHeight = window.innerHeight * 0.7; // 70vh
-      const newWidth = containerHeight * aspectRatio;
+      // const aspectRatio = originalWidth / originalHeight;
+      // const containerHeight = window.innerHeight * 0.7; // 70vh
+      // const newWidth = containerHeight * aspectRatio;
 
-      bgElement.parentElement.style.width = `${newWidth}px`;
+      // bgElement.parentElement.style.width = `${newWidth}px`;
 
       const renderedWidth = bgElement.clientWidth;
       const renderedHeight = bgElement.clientHeight;

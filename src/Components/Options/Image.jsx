@@ -30,7 +30,6 @@ function Image({
       .querySelector(".video-js")
       .getBoundingClientRect();
 
-    console.log("~~~~~~~~~~~3", e);
     let rotation = rotationExtractAndRound(e.transform)
       ? rotationExtractAndRound(e.transform)
       : 0;
@@ -42,8 +41,10 @@ function Image({
       image,
       finalX,
       finalY,
-      targetRect.width * scaleX,
-      targetRect.height * scaleY,
+      // targetRect.width * scaleX,
+      // targetRect.height * scaleY,
+      targetRef.current.clientWidth * scaleX,
+      targetRef.current.clientHeight * scaleY,
       rotation
     );
   };
@@ -111,11 +112,8 @@ function Image({
         //   handleNewUserInteraction(e);
         // }}
         onRender={(e) => {
-          handleNewUserInteraction(e);
-          // e.target.style.transform = e.drag.transform;
           e.target.style.cssText += e.cssText;
-          e.target.style.width = `${e.width}px`;
-          e.target.style.height = `${e.height}px`;
+          handleNewUserInteraction(e);
           prevHeight = e.height;
           prevWidth = e.width;
         }}
