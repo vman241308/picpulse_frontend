@@ -32,11 +32,10 @@ export const BgVideoPreview = ({
   const loader = useRef();
 
   const fetchData = async () => {
-    console.log('bgvideopreview_selectedCategory', selectedCategory)
     var result = [];
     var videoData = [];
     if (localStorage.getItem("SelectedCategoryId") == selectedCategory.id) {
-      result = JSON.parse(localStorage.getItem("SelectedCategoryData"));
+      result = JSON.parse(localStorage.getItem("SelectedBackgroundCategoryData"));
       setData(result);
     } else {
       if (localStorage.getItem('BgList')) {
@@ -57,7 +56,7 @@ export const BgVideoPreview = ({
       
       setData(videoData);
       localStorage.setItem("SelectedCategoryId", selectedCategory.id);
-      localStorage.setItem("SelectedCategoryData", JSON.stringify(videoData));
+      localStorage.setItem("SelectedBackgroundCategoryData", JSON.stringify(videoData));
     }
     setLoading(false);
   };
@@ -126,7 +125,7 @@ export const BgVideoPreview = ({
         }}
       />
       <Grid container>
-        {data.slice(0, currentPage * itemsPerPage).map((item, index, self) => (
+        {data?.slice(0, currentPage * itemsPerPage).map((item, index, self) => (
           <React.Fragment key={index}>
             <Grid
               item

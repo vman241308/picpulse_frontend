@@ -149,6 +149,8 @@ export const ForegroundDialog = ({
             aria-label="delete"
             onClick={() => {
               setPageType("main");
+              localStorage.setItem("SelectedForegroundCategoryData", "")
+              localStorage.setItem('SelectedFgCategory', "")
             }}
           >
             <ChevronLeftIcon />
@@ -175,7 +177,7 @@ export const ForegroundDialog = ({
                 component="div"
                 sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
               >
-                {selectedCategory.category}
+                {localStorage.getItem('SelectedFgCategory')}
               </Typography>
               <Search>
                 <SearchIconWrapper>

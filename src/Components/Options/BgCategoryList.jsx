@@ -38,6 +38,7 @@ export const BgCategoryList = ({
     e.preventDefault();
     e.stopPropagation();
     setPageType("background");
+    localStorage.setItem('SelectedBgCategory', item.category)
     setSelectedCategory({
       id: item.id,
       category: item.category,
@@ -79,7 +80,7 @@ export const BgCategoryList = ({
                 src={`${item.thumb_url}?w=248&fit=crop&auto=format`}
                 alt={item.category}
                 loading="lazy"
-                style={{ width: "127px", height: "127px" }}
+                style={{ height: "127px" }}
               />
               <ImageListItemBar
                 title={item.category}

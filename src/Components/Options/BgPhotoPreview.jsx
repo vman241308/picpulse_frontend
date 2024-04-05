@@ -123,7 +123,7 @@ export const BgPhotoPreview = ({
         }}
       />
       <Grid container>
-        {data.slice(0, currentPage * itemsPerPage).map((item, index, self) => (
+        {data?.slice(0, currentPage * itemsPerPage).map((item, index, self) => (
           <React.Fragment key={index}>
             <Grid
               item

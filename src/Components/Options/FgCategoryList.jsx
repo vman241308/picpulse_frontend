@@ -18,7 +18,6 @@ export const FgCategoryList = ({
   FgData,
   FgLoading,
 }) => {
-  console.log('fgCategorylist::', FgData)
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 100;
   const loader = useRef();
@@ -61,6 +60,7 @@ export const FgCategoryList = ({
     e.preventDefault();
     e.stopPropagation();
     setPageType("foreground");
+    localStorage.setItem('SelectedFgCategory', item.category)
     setSelectedCategory({
       id: item.id,
       category: item.category,
@@ -69,7 +69,7 @@ export const FgCategoryList = ({
 
   return (
     <ImageList sx={{ width: 1, height: 600 }} cols={4}>
-      {FgData.slice(0, currentPage * itemsPerPage).map((item, index, self) => (
+      {FgData?.slice(0, currentPage * itemsPerPage).map((item, index, self) => (
         <Box
           key={index}
           sx={{
@@ -88,7 +88,7 @@ export const FgCategoryList = ({
               src={`${item.thumb_url}?w=248&fit=crop&auto=format`}
               alt={item.category}
               FgLoading="lazy"
-              style={{ width: "127px", height: "127px" }}
+              style={{ height: "127px" }}
             />
             <ImageListItemBar
               title={item.category}

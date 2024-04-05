@@ -58,6 +58,13 @@ export const Main = ({ setVideoFile, setOverlays }) => {
   const [addedOverlays, setAddedOverlays] = useState([]);
 
   const handleClickOpen = (scrollType, ground) => () => {
+
+    localStorage.setItem('ground', ground)
+    if (ground == "fg") {
+      localStorage.getItem("SelectedFgCategory") ? setPageType('foreground') : setPageType('main')
+    } else if (ground == "bg") {
+      localStorage.getItem("SelectedBgCategory") ? setPageType('background') : setPageType('main')
+    }
     setGroundType(ground);
     setOpen(true);
     setScroll(scrollType);
@@ -169,10 +176,10 @@ export const Main = ({ setVideoFile, setOverlays }) => {
 
   return (
     <div className="flex bg-black">
-      <div className="flex flex-row justify-center items-center w-full h-36">
+      <div className="flex flex-row items-center justify-center w-full h-36">
         <div className="flex flex-row w-[36%] gap-16 justify-center items-center p-4">
           <div
-            className="w-28 h-28 p-1 hover:brightness-75 cursor-pointer rounded-lg overflow-hidden relative"
+            className="relative p-1 overflow-hidden rounded-lg cursor-pointer w-28 h-28 hover:brightness-75"
             style={{
               backgroundImage: `url(${backgroundImage})`,
               backgroundRepeat: "no-repeat",
@@ -181,7 +188,7 @@ export const Main = ({ setVideoFile, setOverlays }) => {
             onClick={handleClickOpen("paper", "bg")}
           />
           <label
-            className="w-28 h-28 p-1 hover:brightness-75 cursor-pointer rounded-lg overflow-hidden relative"
+            className="relative p-1 overflow-hidden rounded-lg cursor-pointer w-28 h-28 hover:brightness-75"
             style={{
               backgroundImage: `url(${backgroundAddImage})`,
               backgroundRepeat: "no-repeat",
@@ -190,7 +197,7 @@ export const Main = ({ setVideoFile, setOverlays }) => {
           >
             <input
               type="file"
-              className="absolute inset-0 w-full h-full cursor-pointer opacity-0"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               accept="image/*,video/*"
               onChange={onBgSelect}
             />
@@ -219,7 +226,7 @@ export const Main = ({ setVideoFile, setOverlays }) => {
         </div>
         <div className="flex flex-row w-[36%] gap-16 justify-center items-center p-4">
           <div
-            className="w-28 h-28 p-1 hover:brightness-75 cursor-pointer rounded-lg overflow-hidden relative"
+            className="relative p-1 overflow-hidden rounded-lg cursor-pointer w-28 h-28 hover:brightness-75"
             style={{
               backgroundImage: `url(${forgroundImage})`, // set image here
               backgroundRepeat: "no-repeat",
@@ -228,7 +235,7 @@ export const Main = ({ setVideoFile, setOverlays }) => {
             onClick={handleClickOpen("paper", "fg")}
           />
           <label
-            className="w-28 h-28 p-1 hover:brightness-75 cursor-pointer rounded-lg overflow-hidden relative"
+            className="relative p-1 overflow-hidden rounded-lg cursor-pointer w-28 h-28 hover:brightness-75"
             style={{
               backgroundImage: `url(${forgroundAddImage})`, // set image here
               backgroundRepeat: "no-repeat",
@@ -237,7 +244,7 @@ export const Main = ({ setVideoFile, setOverlays }) => {
           >
             <input
               type="file"
-              className="absolute inset-0 w-full h-full cursor-pointer opacity-0"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               accept="image/*"
               onChange={onFgSelect}
             />

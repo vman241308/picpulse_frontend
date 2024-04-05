@@ -36,7 +36,7 @@ export const FgPreview = ({
     var result = [];
     var overlayData = [];
     if (localStorage.getItem("SelectedCategoryId") === selectedCategory.id) {
-      result = JSON.parse(localStorage.getItem("SelectedCategoryData"));
+      result = JSON.parse(localStorage.getItem("SelectedForegroundCategoryData"));
       setData(result);
     } else {
       result = await axios(
@@ -45,7 +45,7 @@ export const FgPreview = ({
       overlayData = result.data.data;
       setData(overlayData);
       localStorage.setItem("SelectedCategoryId", selectedCategory.id);
-      localStorage.setItem("SelectedCategoryData", JSON.stringify(overlayData));
+      localStorage.setItem("SelectedForegroundCategoryData", JSON.stringify(overlayData));
     }
     setLoading(false);
   };
@@ -114,7 +114,7 @@ export const FgPreview = ({
         }}
       />
       <Grid container>
-        {data.slice(0, currentPage * itemsPerPage).map((item, index, self) => (
+        {data?.slice(0, currentPage * itemsPerPage).map((item, index, self) => (
           <React.Fragment key={index}>
             <Grid
               item

@@ -157,6 +157,8 @@ export const BackgroundDialog = ({
             aria-label="delete"
             onClick={() => {
               setPageType("main");
+              localStorage.setItem("SelectedBackgroundCategoryData", "")
+              localStorage.setItem('SelectedBgCategory', "")
             }}
           >
             <ChevronLeftIcon />
@@ -183,7 +185,7 @@ export const BackgroundDialog = ({
                 component="div"
                 sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
               >
-                {selectedCategory.category}
+                {localStorage.getItem('SelectedBgCategory')}
               </Typography>
               <Search>
                 <SearchIconWrapper>
