@@ -142,7 +142,13 @@ function VideoEditorInterface({
   };
 
   const removeOverlay = (url) => {
-    setOverlays(overlays.filter((item) => item !== url));
+    // setOverlays(overlays.filter((item) => item !== url));
+    setOverlays((overlays) => overlays.filter((item) => item !== url));
+    const newOverlayPositions = overlayPositions.filter(
+      (o) => o.overlayPath !== url
+    );
+    setOverlayPositions(newOverlayPositions);
+    console.log('newOverlayPositions::', newOverlayPositions)
   };
 
   const renderVideo = async (duration) => {
