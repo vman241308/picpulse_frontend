@@ -222,7 +222,7 @@ function VideoEditorInterface({
             `${duration}`,
             "-c:v",
             "h264_nvenc",
-            `./src/public/output_${fileName}.mp4`,
+            `./src/utils/public/output_${fileName}.mp4`,
           ])
         : (ffmpegCommand = [
             "-i",
@@ -233,7 +233,7 @@ function VideoEditorInterface({
             `${duration}`,
             "-preset",
             "ultrafast",
-            `output_${fileName}.mp4`,
+            `./src/utils/public/output_${fileName}.mp4`,
           ]);
     } catch (error) {
       return;
