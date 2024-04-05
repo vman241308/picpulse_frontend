@@ -104,10 +104,7 @@ export const BgVideoPreview = ({
   const download = async (item, index) => {
     setLinerIndex(index);
     setIsDownloadinng(true);
-    const response = await fetch(item.s3_url);
-    const blob = await response.blob();
-    const videoUrl = URL.createObjectURL(blob);
-    setVideoFile({ url: videoUrl, type: "video" });
+    setVideoFile({ url: item.s3_url, type: "video" });
     setDownloadedData((prevDownloaded) => [...prevDownloaded, item]);
     setIsDownloadinng(false);
   };
