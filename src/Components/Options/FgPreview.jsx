@@ -89,10 +89,7 @@ export const FgPreview = ({
 
   const download = async (item, index) => {
     setIsDownloading(true);
-    const response = await fetch(item.s3_url);
-    const blob = await response.blob();
-    const overlayUrl = URL.createObjectURL(blob);
-    setOverlays((prevOverlays) => [...prevOverlays, overlayUrl]);
+    setOverlays((prevOverlays) => [...prevOverlays, item.s3_url]);
     setDownloadedOverlay([
       ...downloadedOverlay,
       { ...item, category: selectedCategory },
