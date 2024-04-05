@@ -262,14 +262,6 @@ function VideoEditorInterface({
       console.log("error::", error);
     }
 
-    // Create a link element for downloading the image
-    // const a = document.createElement("a");
-    // a.href = edited_video_url;
-    // a.download = "videoshot.mp4";
-    // document.body.appendChild(a);
-    // a.click();
-    // document.body.removeChild(a);
-
     EventBus.dispatch("setLoading", false);
   };
 

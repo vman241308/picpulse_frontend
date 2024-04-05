@@ -13,6 +13,8 @@ import { BackgroundDialog } from "./BackgroundDialog.jsx";
 
 import backgroundImage from "@/assets/icons/background_ico.png";
 import forgroundImage from "@/assets/icons/forground_ico.png";
+import backgroundAddImage from "@/assets/icons/background_add_ico.png";
+import forgroundAddImage from "@/assets/icons/forground_add_ico.png";
 import axios from "axios";
 import EventBus from "../../utils/EventBus.jsx";
 
@@ -181,7 +183,7 @@ export const Main = ({ setVideoFile, setOverlays }) => {
           <label
             className="w-28 h-28 p-1 hover:brightness-75 cursor-pointer rounded-lg overflow-hidden relative"
             style={{
-              backgroundImage: `url(${backgroundImage})`,
+              backgroundImage: `url(${backgroundAddImage})`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
             }}
@@ -228,7 +230,7 @@ export const Main = ({ setVideoFile, setOverlays }) => {
           <label
             className="w-28 h-28 p-1 hover:brightness-75 cursor-pointer rounded-lg overflow-hidden relative"
             style={{
-              backgroundImage: `url(${backgroundImage})`, // set image here
+              backgroundImage: `url(${forgroundAddImage})`, // set image here
               backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
             }}
