@@ -77,9 +77,14 @@ function Image({
       className={`draggable-${index}`}
       id={`draggable${index}`}
     >
-      <img
+      <div
         ref={targetRef}
-        src={image}
+        style={{
+          background: `url(${image}) no-repeat`,
+          backgroundSize: "100% 100%",
+          width: "640px",
+          height: "480px",
+        }}
         onDoubleClick={() => {
           removeOverlay(image);
         }}
