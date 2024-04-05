@@ -239,7 +239,8 @@ function VideoEditorInterface({
       return;
     }
 
-    console.log("~~~~~~~~~~~~~~~~~~~~~", ffmpegCommand);
+    // console.log(ffmpegCommand);
+
     try {
       await axios
         .post(`http://3.143.204.91:4000/api/editor`, {
@@ -247,7 +248,7 @@ function VideoEditorInterface({
           fileName: `output_${fileName}.mp4`,
         })
         .then(async (res) => {
-          console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`", res.data.message);
+          // console.log(res.data.message);
           const response = await fetch(res.data.message);
           const blob = await response.blob();
           const blobUrl = URL.createObjectURL(blob);
