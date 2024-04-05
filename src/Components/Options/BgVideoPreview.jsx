@@ -22,6 +22,7 @@ export const BgVideoPreview = ({
   setVideoFile,
   setDownloadedData,
   selectedCategory,
+  setPageType
 }) => {
   const [LinerIndex, setLinerIndex] = useState(null);
   const [isDownloadinng, setIsDownloadinng] = useState(false);
@@ -32,6 +33,9 @@ export const BgVideoPreview = ({
   const loader = useRef();
 
   const fetchData = async () => {
+    if (!selectedCategory.id) {
+      setPageType("main")
+    }
     var result = [];
     var videoData = [];
     if (localStorage.getItem("SelectedCategoryId") == selectedCategory.id) {
@@ -52,6 +56,11 @@ export const BgVideoPreview = ({
             (item.s3_url.endsWith(".mp4") || item.s3_url.endsWith(".mov")) &&
             item.category_id == selectedCategory.id
         );
+      }
+
+      if (videoData.length == 0) {
+        setPageType('main');
+        return;
       }
       
       setData(videoData);

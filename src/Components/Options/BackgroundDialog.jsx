@@ -223,6 +223,7 @@ export const BackgroundDialog = ({
                       setVideoFile={setVideoFile}
                       setDownloadedData={setDownloadedData}
                       selectedCategory={selectedCategory}
+                      setPageType={setPageType}
                     />
                   </Grid>
                 </Box>

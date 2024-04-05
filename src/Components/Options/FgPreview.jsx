@@ -23,6 +23,7 @@ export const FgPreview = ({
   downloadedOverlay,
   setDownloadedOverlay,
   selectedCategory,
+  setPageType
 }) => {
   const [LinerIndex, setLinerIndex] = useState(null);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -33,6 +34,9 @@ export const FgPreview = ({
   const loader = useRef();
 
   const fetchData = async () => {
+    if (!selectedCategory.id) {
+      setPageType("main")
+    }
     var result = [];
     var overlayData = [];
     if (localStorage.getItem("SelectedCategoryId") === selectedCategory.id) {
@@ -43,6 +47,10 @@ export const FgPreview = ({
         `http://18.218.107.206/greenscreen/public/service.php?type=get_foreground_assets&category_id=${selectedCategory.id}`
       );
       overlayData = result.data.data;
+      if (overlayData.length == 0) {
+        setPageType('main');
+        return;
+      }
       setData(overlayData);
       localStorage.setItem("SelectedCategoryId", selectedCategory.id);
       localStorage.setItem("SelectedForegroundCategoryData", JSON.stringify(overlayData));

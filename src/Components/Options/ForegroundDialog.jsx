@@ -215,6 +215,7 @@ export const ForegroundDialog = ({
                       downloadedOverlay={downloadedOverlay}
                       setDownloadedOverlay={setDownloadedOverlay}
                       selectedCategory={selectedCategory}
+                      setPageType={setPageType}
                     />
                   </Grid>
                 </Box>

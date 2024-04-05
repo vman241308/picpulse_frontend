@@ -61,9 +61,9 @@ export const Main = ({ setVideoFile, setOverlays }) => {
 
     localStorage.setItem('ground', ground)
     if (ground == "fg") {
-      localStorage.getItem("SelectedFgCategory") ? setPageType('foreground') : setPageType('main')
+      localStorage.getItem("SelectedFgCategory") && localStorage.getItem("SelectedForegroundCategoryData") ? setPageType('foreground') : setPageType('main')
     } else if (ground == "bg") {
-      localStorage.getItem("SelectedBgCategory") ? setPageType('background') : setPageType('main')
+      localStorage.getItem("SelectedBgCategory") && localStorage.getItem("SelectedBackgroundCategoryData") ? setPageType('background') : setPageType('main')
     }
     setGroundType(ground);
     setOpen(true);
