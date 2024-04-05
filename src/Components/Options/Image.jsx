@@ -90,32 +90,24 @@ function Image({
         draggable={true}
         scalable={true}
         rotatable={true}
-        pinchable={true}
-        pinchOutside={true}
-        renderDirections={["nw", "n", "ne", "w", "e", "sw", "s", "se"]}
-        // onDrag={(e) => {
-        //   e.target.style.transform = e.transform;
-        //   handleNewUserInteraction(e);
-        //   prevHeight = e.height;
-        //   prevWidth = e.width;
-        // }}
-        // onResize={(e) => {
-        //   e.target.style.width = `${e.width}px`;
-        //   e.target.style.height = `${e.height}px`;
-        //   e.target.style.transform = e.drag.transform;
-        //   handleNewUserInteraction(e);
-        //   prevHeight = e.height;
-        //   prevWidth = e.width;
-        // }}
-        // onRotate={(e) => {
-        //   e.target.style.transform = e.drag.transform;
-        //   handleNewUserInteraction(e);
-        // }}
-        onRender={(e) => {
-          e.target.style.cssText += e.cssText;
+        resizable={true}
+        onDrag={(e) => {
+          e.target.style.transform = e.transform;
           handleNewUserInteraction(e);
           prevHeight = e.height;
           prevWidth = e.width;
+        }}
+        onResize={(e) => {
+          e.target.style.width = `${e.width}px`;
+          e.target.style.height = `${e.height}px`;
+          e.target.style.transform = e.drag.transform;
+          handleNewUserInteraction(e);
+          prevHeight = e.height;
+          prevWidth = e.width;
+        }}
+        onRotate={(e) => {
+          e.target.style.transform = e.drag.transform;
+          handleNewUserInteraction(e);
         }}
       />
     </div>
