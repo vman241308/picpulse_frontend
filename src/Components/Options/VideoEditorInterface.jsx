@@ -22,11 +22,20 @@ function VideoEditorInterface({
   const [scaleY, setScaleY] = useState(1); // Vertical scaling factor
   const [recordingStatus, setRecordingStatus] = useState();
   const [overlayPositions, setOverlayPositions] = useState([]);
+  const [bgWidth, setBgWidth] = useState(0);
+  const [bgHeight, setBgHeight] = useState(0);
 
   useEffect(() => {
     if (bgRef.current && backgroundType === "video") {
       bgRef.current.load();
     }
+
+    let img = new window.Image();
+    img.onload = () => {
+      setBgWidth(img.width % 2 == 1 ? img.width + 1 : img.width);
+      setBgHeight(img.height % 2 == 1 ? img.height + 1 : img.height);
+    };
+    img.src = videoFile;
   }, [videoFile]);
 
   useEffect(() => {
@@ -173,13 +182,15 @@ function VideoEditorInterface({
             let resizeOverlay = `[${overlayIndex + 1}:v]scale=${
               timeline.width
             }:${timeline.height}${rotateOverlay}[scaled${overlayIndex + 1}];`; //<---THIS WORKS, rotation is breaking it
-            let chainStart =
-              overlayIndex > 0
-                ? `${resizeOverlay}[v${overlayIndex}][scaled${
-                    overlayIndex + 1
-                  }]`
-                : `${resizeOverlay}[0:v][scaled${overlayIndex + 1}]`;
-
+            // let chainStart =
+            //   overlayIndex > 0
+            //     ? `${resizeOverlay}[v${overlayIndex}][scaled${
+            //         overlayIndex + 1
+            //       }]`
+            //     : `${resizeOverlay}[0:v][scaled${overlayIndex + 1}]`;
+            let chainStart = `${resizeOverlay}[v${overlayIndex}][scaled${
+              overlayIndex + 1
+            }]`;
             let chainSuffix;
 
             if (overlayPositions.length > 1) {
@@ -191,6 +202,7 @@ function VideoEditorInterface({
               chainSuffix = `[out]`;
             }
 
+            // return `${chainStart}overlay=${timeline.x}:${timeline.y}${chainSuffix}`;
             return `${chainStart}overlay=${timeline.x}:${timeline.y}${chainSuffix}`;
           })
         )
@@ -198,10 +210,11 @@ function VideoEditorInterface({
     }
 
     try {
+      let bgscale = `[0:v]scale=${bgWidth}:${bgHeight}[v0]`;
       overlayPositions.length > 0
         ? (ffmpegCommand = [
-            "-hwaccel",
-            "cuda",
+            // "-hwaccel",
+            // "cuda",
             "-i",
             `${videoFile}`,
             // Include each overlay as an input
@@ -221,7 +234,7 @@ function VideoEditorInterface({
               ])
               .flat(),
             "-filter_complex",
-            `${generateOverlayFilters()}`,
+            `${bgscale};${generateOverlayFilters()}`,
             "-map",
             `[out]`,
             "-r",
@@ -232,7 +245,8 @@ function VideoEditorInterface({
             "-t",
             `${duration}`,
             "-c:v",
-            "h264_nvenc",
+            // "h264_nvenc",
+            "libx264",
             `./src/utils/public/output_${fileName}.mp4`,
           ])
         : (ffmpegCommand = [

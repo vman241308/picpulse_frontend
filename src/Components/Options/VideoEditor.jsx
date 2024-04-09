@@ -23,7 +23,11 @@ const VideoEditor = () => {
             setOverlays={setOverlays}
           />
         ) : (
-          <div className="bg-black w-[80%] h-full border-dashed border-2 border-sky-500"></div>
+          <div className="bg-black w-[80%] h-full border-dashed border-2 border-sky-500 relative flex items-center justify-center">
+            <div className="absolute -bottom-24 z-50">
+              <div className="w-16 h-16 bg-red-600 hover:bg-red-500 rounded-full cursor-pointer" />
+            </div>
+          </div>
         )}
         {/* <div className="bg-black w-[80%] h-full border-dashed border-2 border-sky-500"></div> */}
       </div>
