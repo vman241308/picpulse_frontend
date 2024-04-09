@@ -50,30 +50,25 @@ function VideoEditorInterface({
   }, [recordingStatus]);
 
   useEffect(() => {
-    overlays?.forEach((overlayPath, index) => {
-      const lastIndex = overlayPath.lastIndexOf("/");
-      const overlayName = overlayPath.substring(lastIndex + 1);
-      const overlayFileName = `${overlayName}.png`;
-
-      const fileExists = overlayPositions.some(
-        (position) => position.fileNameFFMPEG == overlayFileName
-      );
-
-      if (fileExists) {
-        return;
-      }
-
-      setOverlayPositions((prevPositions) => {
-        return [
-          ...prevPositions,
-          {
-            overlayPath: overlayPath,
-            fileNameFFMPEG: overlayFileName,
-            timeline: [],
-          },
-        ];
-      });
-    });
+    console.log('useeffect')
+    if (overlays.length > 0 && overlays.length > overlayPositions.length) {
+        let overlayPath = overlays[overlays.length-1]
+        const lastIndex = overlayPath.lastIndexOf("/");
+        const overlayName = overlayPath.substring(lastIndex + 1);
+        const overlayFileName = `${overlayName}.png`;
+        setOverlayPositions((prevPositions) => {
+          return [
+            ...prevPositions,
+            {
+              overlayPath: overlayPath,
+              fileNameFFMPEG: overlayFileName,
+              timeline: [],
+            },
+          ];
+        });
+    } else if(overlays.length === 0) {
+      setOverlayPositions([])  
+    }      
   }, [overlays]);
 
   const handleMetadataLoaded = () => {
@@ -110,7 +105,8 @@ function VideoEditorInterface({
     finalY,
     width,
     heigth,
-    rotation
+    rotation,
+    imgIndex
   ) => {
     const newMovement = {
       x: finalX,
@@ -121,8 +117,8 @@ function VideoEditorInterface({
       frame: 1,
     };
     setOverlayPositions((prevPositions) => {
-      return prevPositions.map((item) => {
-        if (item.overlayPath === overlayPath) {
+      return prevPositions.map((item, index) => {
+        if (item.overlayPath === overlayPath && index === imgIndex) {
           const existingMovementIndex = item.timeline.findIndex(
             (movement) => movement.frame === newMovement.frame
           );
@@ -150,12 +146,15 @@ function VideoEditorInterface({
     });
   };
 
-  const removeOverlay = (url) => {
-    // setOverlays(overlays.filter((item) => item !== url));
-    setOverlays((overlays) => overlays.filter((item) => item !== url));
+  const removeOverlay = (imgIndex, url) => {
+    console.log('removeOverlay')
+    console.log(imgIndex)
+    console.log('overlays::', overlays)
+    setOverlays((overlays) => overlays.filter((overlay, index) => (index !== imgIndex)));
     const newOverlayPositions = overlayPositions.filter(
-      (o) => o.overlayPath !== url
+      (o, index) => index !== imgIndex
     );
+    console.log('newOverlayPositions::', newOverlayPositions)
     setOverlayPositions(newOverlayPositions);
   };
 
@@ -165,6 +164,7 @@ function VideoEditorInterface({
     let ffmpegCommand = "";
 
     function generateOverlayFilters() {
+      console.log('overlayPositions::', overlayPositions)
       return overlayPositions
         .flatMap((overlayPosition, overlayIndex) =>
           overlayPosition.timeline.map((timeline, index, array) => {
@@ -219,13 +219,6 @@ function VideoEditorInterface({
             `${videoFile}`,
             // Include each overlay as an input
             ...overlayPositions
-              .filter(
-                (overlay, index, self) =>
-                  index ===
-                  self.findIndex(
-                    (o) => o.fileNameFFMPEG === overlay.fileNameFFMPEG
-                  )
-              )
               .map((overlay) => [
                 "-stream_loop",
                 "-1",
@@ -293,7 +286,7 @@ function VideoEditorInterface({
 
   return (
     <div className="bg-black w-[80%] h-full border-dashed border-2 border-sky-500 flex items-center justify-center relative">
-      <div className="w-full h-full flex items-center justify-center absolute">
+      <div className="absolute flex items-center justify-center w-full h-full">
         {backgroundType === "video" ? (
           <video
             ref={bgRef}
@@ -328,10 +321,10 @@ function VideoEditorInterface({
             />
           ))}
       </div>
-      <div className="absolute -bottom-24 z-50">
+      <div className="absolute z-50 -bottom-24">
         {recordingStatus ? (
           <img
-            className="w-16 h-16 hover:brightness-75 cursor-pointer"
+            className="w-16 h-16 cursor-pointer hover:brightness-75"
             src={RecordingIco}
             onClick={() => {
               setRecordingStatus(false);
@@ -339,7 +332,7 @@ function VideoEditorInterface({
           />
         ) : (
           <div
-            className="w-16 h-16 bg-red-600 hover:bg-red-500 rounded-full cursor-pointer"
+            className="w-16 h-16 bg-red-600 rounded-full cursor-pointer hover:bg-red-500"
             onClick={() => {
               setRecordingStatus(true);
             }}
