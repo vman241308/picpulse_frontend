@@ -25,6 +25,7 @@ function Image({
   };
 
   const handleNewUserInteraction = async (e) => {
+    console.log(e);
     const targetRect = targetRef.current.getBoundingClientRect();
     const parentRect = document
       .querySelector(".video-js")
