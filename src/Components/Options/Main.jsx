@@ -6,6 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 import { MainDialog } from "./MainDialog.jsx";
+import * as fal from "@fal-ai/serverless-client";
 import { DragDropBackground, DragDropOverlay } from "./DragDrop.jsx";
 
 import { ForegroundDialog } from "./ForegroundDialog.jsx";
@@ -15,6 +16,8 @@ import backgroundImage from "@/assets/icons/background_ico.png";
 import forgroundImage from "@/assets/icons/forground_ico.png";
 import backgroundAddImage from "@/assets/icons/background_add_ico.png";
 import forgroundAddImage from "@/assets/icons/forground_add_ico.png";
+import bgRemoveIco from "@/assets/icons/scissor_ico.png";
+
 import axios from "axios";
 import EventBus from "../../utils/EventBus.jsx";
 
@@ -56,14 +59,20 @@ export const Main = ({ setVideoFile, setOverlays }) => {
   const [ratio, setRatio] = useState(0);
   const [groundType, setGroundType] = useState("");
   const [addedOverlays, setAddedOverlays] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const handleClickOpen = (scrollType, ground) => () => {
-
-    localStorage.setItem('ground', ground)
+    localStorage.setItem("ground", ground);
     if (ground == "fg") {
-      localStorage.getItem("SelectedFgCategory") && localStorage.getItem("SelectedForegroundCategoryData") ? setPageType('foreground') : setPageType('main')
+      localStorage.getItem("SelectedFgCategory") &&
+      localStorage.getItem("SelectedForegroundCategoryData")
+        ? setPageType("foreground")
+        : setPageType("main");
     } else if (ground == "bg") {
-      localStorage.getItem("SelectedBgCategory") && localStorage.getItem("SelectedBackgroundCategoryData") ? setPageType('background') : setPageType('main')
+      localStorage.getItem("SelectedBgCategory") &&
+      localStorage.getItem("SelectedBackgroundCategoryData")
+        ? setPageType("background")
+        : setPageType("main");
     }
     setGroundType(ground);
     setOpen(true);
@@ -174,6 +183,87 @@ export const Main = ({ setVideoFile, setOverlays }) => {
     }
   };
 
+  const onBgRemoveSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.type.startsWith("image/")) {
+      let overlayFileS3Key =
+        file.name.split(".").slice(0, -1).join(".") +
+        "-" +
+        new Date().getTime() +
+        "." +
+        file.name.split(".").pop();
+
+      overlayFileS3Key = overlayFileS3Key.replaceAll(" ", "_");
+
+      if (e.target.files && e.target.files[0]) {
+        let reader = new FileReader();
+
+        reader.onload = (e) => {
+          let imageUrl = e.target.result; // This is the Data URL
+          processImage(imageUrl, overlayFileS3Key);
+        };
+
+        // Read the file as Data URL
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    }
+  };
+
+  const processImage = async (imgURL, imgS3Key) => {
+    EventBus.dispatch("setLoading", true);
+    try {
+      const result = await fal.subscribe("fal-ai/imageutils/rembg", {
+        input: {
+          image_url: imgURL,
+        },
+        logs: true,
+        onQueueUpdate: (update) => {
+          if (update.status === "IN_PROGRESS") {
+            update.logs.map((log) => log.message).forEach(console.log);
+          }
+        },
+      });
+
+      const response = await fetch(result.image.url);
+      const blobData = await response.blob();
+
+      const imageFile = new File([blobData], result.image.file_name, {
+        type: result.image.content_type,
+        lastModified: new Date(),
+      });
+
+      await axios
+        .post(
+          `https://6ryr2wliwk.execute-api.us-east-2.amazonaws.com/product/presignedURL`,
+          {
+            fileKey: imgS3Key,
+          }
+        )
+        .then(async (res) => {
+          const signedUrl = res.data.signedUrl;
+          await fetch(signedUrl, {
+            method: "PUT",
+            body: imageFile,
+          });
+          setOverlays((prevOverlays) => [
+            ...prevOverlays,
+            "https://picpulsemedia.s3.amazonaws.com/" + imgS3Key,
+          ]);
+          EventBus.dispatch("setLoading", false);
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const setFalConfig = () => {
+    fal.config({
+      credentials: `${import.meta.env.VITE_REACT_APP_FAL_KEY}`,
+    });
+  };
+
   return (
     <div className="flex bg-black">
       <div className="flex flex-row items-center justify-center w-full h-36">
@@ -247,6 +337,22 @@ export const Main = ({ setVideoFile, setOverlays }) => {
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               accept="image/*"
               onChange={onFgSelect}
+            />
+          </label>
+          <label
+            className="relative p-1 overflow-hidden rounded-lg cursor-pointer w-[93px] h-[93px] hover:brightness-75"
+            style={{
+              backgroundImage: `url(${bgRemoveIco})`, // set image here
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+            }}
+            onClick={setFalConfig}
+          >
+            <input
+              type="file"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              accept="image/*"
+              onChange={onBgRemoveSelect}
             />
           </label>
           {/* <DragDropOverlay setOverlays={setOverlays} className="w-1/2" /> */}
