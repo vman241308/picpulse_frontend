@@ -49,17 +49,32 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-export const Main = ({ setVideoFile, setOverlays }) => {
+export const Main = ({ setVideoFile, setOverlays, setAspectRatio }) => {
   const [open, setOpen] = useState(false);
   const [scroll, setScroll] = useState("paper");
   const [pageType, setPageType] = useState("main");
   const [downloadedData, setDownloadedData] = useState([]);
   const [downloadedOverlay, setDownloadedOverlay] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState({});
-  const [ratio, setRatio] = useState(0);
+  const [ratio, setRatio] = useState(3);
   const [groundType, setGroundType] = useState("");
   const [addedOverlays, setAddedOverlays] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
+
+  useEffect(() => {
+    switch (ratio) {
+      case 0:
+        setAspectRatio(16);
+        break;
+      case 1:
+        setAspectRatio(1);
+        break;
+      case 2:
+        setAspectRatio(4);
+        break;
+      default:
+        break;
+    }
+  }, [ratio]);
 
   const handleClickOpen = (scrollType, ground) => () => {
     localStorage.setItem("ground", ground);
