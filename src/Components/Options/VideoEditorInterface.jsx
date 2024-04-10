@@ -344,13 +344,13 @@ function VideoEditorInterface({
     } else {
       switch (aspectRatio) {
         case 16:
-          aspectFilter = "crop=iw:iw*16/9";
+          aspectFilter = "crop=iw:iw*9/16";
           break;
         case 1:
           aspectFilter = "crop=iw:iw";
           break;
         default:
-          aspectFilter = "crop=iw:iw*4/3";
+          aspectFilter = "crop=iw:iw*3/4";
           break;
       }
     }
