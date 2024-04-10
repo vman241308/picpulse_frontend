@@ -6,6 +6,7 @@ import { Main } from "./Main.jsx";
 const VideoEditor = () => {
   const [videoFile, setVideoFile] = useState({ url: null, type: null });
   const [overlays, setOverlays] = useState([]);
+  const [aspectRatio, setAspectRatio] = useState(null);
   const bgRef = useRef(null);
   const playerRef = useRef(null);
 
@@ -21,6 +22,7 @@ const VideoEditor = () => {
             overlays={overlays}
             playerRef={playerRef}
             setOverlays={setOverlays}
+            aspectRatio={aspectRatio}
           />
         ) : (
           <div className="bg-black w-[80%] h-full border-dashed border-2 border-sky-500 relative flex items-center justify-center">
@@ -31,7 +33,11 @@ const VideoEditor = () => {
         )}
         {/* <div className="bg-black w-[80%] h-full border-dashed border-2 border-sky-500"></div> */}
       </div>
-      <Main setVideoFile={setVideoFile} setOverlays={setOverlays} />
+      <Main
+        setVideoFile={setVideoFile}
+        setOverlays={setOverlays}
+        setAspectRatio={setAspectRatio}
+      />
     </div>
   );
 };
