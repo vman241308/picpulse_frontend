@@ -46,7 +46,8 @@ function Image({
       // targetRect.height * scaleY,
       targetRef.current.clientWidth * scaleX,
       targetRef.current.clientHeight * scaleY,
-      rotation
+      rotation,
+      index
     );
   };
 
@@ -65,6 +66,7 @@ function Image({
       finalY,
       targetRef.current.clientWidth * scaleX,
       targetRef.current.clientHeight * scaleY,
+      0,
       0
     );
   };
@@ -98,7 +100,7 @@ function Image({
           height: "480px",
         }}
         onDoubleClick={() => {
-          removeOverlay(image);
+          removeOverlay(index,image);
         }}
       />
       <Moveable
