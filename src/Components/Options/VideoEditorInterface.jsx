@@ -337,8 +337,11 @@ function VideoEditorInterface({
         case 1:
           aspectFilter = "crop=ih:ih";
           break;
-        default:
+        case 4:
           aspectFilter = "crop=ih*4/3:ih";
+          break;
+        default:
+          aspectFilter = "crop=iw:ih";
           break;
       }
     } else {
@@ -349,8 +352,11 @@ function VideoEditorInterface({
         case 1:
           aspectFilter = "crop=iw:iw";
           break;
-        default:
+        case 4:
           aspectFilter = "crop=iw:iw*3/4";
+          break;
+        default:
+          aspectFilter = "crop=iw:ih";
           break;
       }
     }
