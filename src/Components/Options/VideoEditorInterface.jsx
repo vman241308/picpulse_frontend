@@ -18,7 +18,7 @@ function VideoEditorInterface({
   playerRef,
   setOverlays,
   aspectRatio,
-  audio
+  audio,
 }) {
   const [scaleX, setScaleX] = useState(1); // Horizontal scaling factor
   const [scaleY, setScaleY] = useState(1); // Vertical scaling factor
@@ -116,23 +116,23 @@ function VideoEditorInterface({
         setStyleCoverImageR("bg-black absolute top-0 -right-[1px]");
         switch (aspectRatio) {
           case 16:
-            setCoverImageHeight(renderedHeight);
+            setCoverImageHeight(renderedHeight + 2);
             setCoverImageWidth(
-              Math.abs((renderedWidth - (renderedHeight * 16) / 9) / 2 + 2)
+              Math.abs((renderedWidth - (renderedHeight * 16) / 9) / 2) + 2
             );
             break;
 
           case 1:
-            setCoverImageHeight(renderedHeight);
+            setCoverImageHeight(renderedHeight + 2);
             setCoverImageWidth(
-              Math.abs((renderedWidth - renderedHeight) / 2 + 2)
+              Math.abs((renderedWidth - renderedHeight) / 2) + 2
             );
             break;
 
           case 4:
-            setCoverImageHeight(renderedHeight);
+            setCoverImageHeight(renderedHeight + 2);
             setCoverImageWidth(
-              Math.abs((renderedWidth - (renderedHeight * 4) / 3) / 2 + 2)
+              Math.abs((renderedWidth - (renderedHeight * 4) / 3) / 2) + 2
             );
             break;
 
@@ -148,19 +148,21 @@ function VideoEditorInterface({
         switch (aspectRatio) {
           case 16:
             setCoverImageHeight(
-              Math.abs((renderedHeight - (renderedWidth * 9) / 16) / 2)
+              Math.abs((renderedHeight - (renderedWidth * 9) / 16) / 2) + 2
             );
             setCoverImageWidth(renderedWidth + 2);
             break;
 
           case 1:
-            setCoverImageHeight(Math.abs((renderedHeight - renderedWidth) / 2));
+            setCoverImageHeight(
+              Math.abs((renderedHeight - renderedWidth) / 2) + 2
+            );
             setCoverImageWidth(renderedWidth + 2);
             break;
 
           case 4:
             setCoverImageHeight(
-              Math.abs((renderedHeight - (renderedWidth * 3) / 4) / 2)
+              Math.abs((renderedHeight - (renderedWidth * 3) / 4) / 2) + 2
             );
             setCoverImageWidth(renderedWidth + 2);
             break;
@@ -372,16 +374,24 @@ function VideoEditorInterface({
     console.log(musicLink);
 
     try {
-      aspectFFmpegCommand = [
-        "-i",
-        `./src/utils/public/output_${fileName}.mp4`,
-        `${musicLink ? "-i" : ""}`,
-        `${musicLink ? musicLink : ""}`,
-        "-vf",
-        `${aspectFilter}`,
-        "-shortest",
-        `./src/utils/public/output_${fileName}_result.mp4`,
-      ];
+      musicLink
+        ? (aspectFFmpegCommand = [
+            "-i",
+            `./src/utils/public/output_${fileName}.mp4`,
+            "-i",
+            `${musicLink}`,
+            "-vf",
+            `${aspectFilter}`,
+            "-shortest",
+            `./src/utils/public/output_${fileName}_result.mp4`,
+          ])
+        : (aspectFFmpegCommand = [
+            "-i",
+            `./src/utils/public/output_${fileName}.mp4`,
+            "-vf",
+            `${aspectFilter}`,
+            `./src/utils/public/output_${fileName}_result.mp4`,
+          ]);
     } catch (error) {
       return;
     }
