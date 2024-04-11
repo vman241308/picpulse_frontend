@@ -17,7 +17,7 @@ import ListItemText from '@mui/material/ListItemText';
 import FolderIcon from '@mui/icons-material/Folder';
 import { MusicDialog } from "./MusicDialog.jsx";
 
-const Header = () => {
+const Header = ({audio, setAudio}) => {
   const [open, setOpen] = useState(false);
   const [openMusicDialog, setOpenMusicDialog] = useState(false);
   const [scroll, setScroll] = useState("paper");
@@ -178,7 +178,7 @@ const Header = () => {
         </DialogContentText>
       </DialogContent>
       </Dialog>
-      <MusicDialog setOpen={setOpen} openMusicDialog={openMusicDialog} selectedMusicCategory = {selectedMusicCategory} handleCloseMusicDialog={handleCloseMusicDialog} scroll={scroll} />
+      <MusicDialog audio={audio} setAudio={setAudio} setOpen={setOpen} openMusicDialog={openMusicDialog} selectedMusicCategory = {selectedMusicCategory} handleCloseMusicDialog={handleCloseMusicDialog} scroll={scroll} />
     </div>
   );
 };

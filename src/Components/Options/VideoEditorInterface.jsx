@@ -18,6 +18,7 @@ function VideoEditorInterface({
   playerRef,
   setOverlays,
   aspectRatio,
+  audio
 }) {
   const [scaleX, setScaleX] = useState(1); // Horizontal scaling factor
   const [scaleY, setScaleY] = useState(1); // Vertical scaling factor
@@ -367,7 +368,7 @@ function VideoEditorInterface({
       }
     }
 
-    let musicLink = JSON.parse(localStorage.getItem("SelectedMusic"))?.s3_url;
+    let musicLink = audio?.src;
     console.log(musicLink);
 
     try {
@@ -384,7 +385,6 @@ function VideoEditorInterface({
     } catch (error) {
       return;
     }
-
     console.log(ffmpegCommand);
     console.log(aspectFFmpegCommand);
 
@@ -431,7 +431,7 @@ function VideoEditorInterface({
               ref={bgRef}
               loop
               autoPlay
-              className="h-full w-auto video-js"
+              className="w-auto h-full video-js"
               id="video-js"
               onLoadedMetadata={handleMetadataLoaded}
               src={videoFile}
@@ -440,7 +440,7 @@ function VideoEditorInterface({
             <img
               ref={bgRef}
               src={videoFile}
-              className="h-full w-auto video-js"
+              className="w-auto h-full video-js"
               id="video-js"
               onLoad={handleMetadataLoaded}
             ></img>

@@ -3,7 +3,7 @@ import VideoEditorInterface from "./VideoEditorInterface.jsx";
 
 import { Main } from "./Main.jsx";
 
-const VideoEditor = () => {
+const VideoEditor = ({audio}) => {
   const [videoFile, setVideoFile] = useState({ url: null, type: null });
   const [overlays, setOverlays] = useState([]);
   const [aspectRatio, setAspectRatio] = useState(null);
@@ -23,11 +23,12 @@ const VideoEditor = () => {
             playerRef={playerRef}
             setOverlays={setOverlays}
             aspectRatio={aspectRatio}
+            audio={audio}
           />
         ) : (
           <div className="bg-black w-[80%] h-full border-dashed border-2 border-sky-500 relative flex items-center justify-center">
-            <div className="absolute -bottom-24 z-50">
-              <div className="w-16 h-16 bg-red-600 hover:bg-red-500 rounded-full cursor-pointer" />
+            <div className="absolute z-50 -bottom-24">
+              <div className="w-16 h-16 bg-red-600 rounded-full cursor-pointer hover:bg-red-500" />
             </div>
           </div>
         )}
