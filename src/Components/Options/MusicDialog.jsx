@@ -110,6 +110,8 @@ TabPanel.propTypes = {
 };
 
 export const MusicDialog = ({
+  audio,
+  setAudio,
   setOpen,
   openMusicDialog,
   selectedMusicCategory,
@@ -120,8 +122,8 @@ export const MusicDialog = ({
   const [data, setData] = useState([]);
   const descriptionElementRef = React.useRef(null);
   const theme = useTheme();
-  const [selectedMusic, setSelectedMusic] = useState(localStorage.getItem('SelectedMusic'))
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  
 
   useEffect(() => {
     if (openMusicDialog) {
@@ -135,10 +137,6 @@ export const MusicDialog = ({
   useEffect(() => {
     fetchMusicByCategory();
   }, [selectedMusicCategory]);
-
-  useEffect(() => {
-    setSelectedMusic(selectedMusic)
-  }, [selectedMusic])
 
   const fetchMusicByCategory = async () => {
     // setLoading(true)
@@ -170,16 +168,22 @@ export const MusicDialog = ({
   };
 
   const download = async (item, index) => {
-    localStorage.setItem('SelectedMusic', JSON.stringify(item))
-
-     // Initialize new Audio object
-    const audio = new Audio(item.s3_url);
+    // localStorage.setItem('SelectedMusic', JSON.stringify(item))
+    // Initialize new Audio object
+    const newAudio = new Audio(item.s3_url);
 
     // This will loop the audio
-    audio.loop = true;
+    newAudio.loop = true;
+
+    // Stop the currently playing audio before starting the new one
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+    setAudio(newAudio);
     
     // This will start the playback
-    audio.play();
+    newAudio.play();
 
     // Set the Snackbar to open
     setOpenSnackbar(true);
@@ -190,6 +194,14 @@ export const MusicDialog = ({
     // setDownloadedData((prevDownloaded) => [...prevDownloaded, item]);
     // setIsDownloading(false);
   };
+
+  // useEffect(() => {
+  //   return () => {
+  //     if (audio) {
+  //       audio.pause();
+  //     }
+  //   };
+  // }, [audio]);
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === 'clickaway') {
