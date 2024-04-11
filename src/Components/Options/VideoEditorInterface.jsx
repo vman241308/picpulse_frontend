@@ -78,15 +78,15 @@ function VideoEditorInterface({
     }
   }, [overlays]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      handleMetadataLoaded();
-    };
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     handleMetadataLoaded();
+  //   };
 
-    window.addEventListener("resize", handleResize);
+  //   window.addEventListener("resize", handleResize);
 
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
 
   useEffect(() => {
     handleMetadataLoaded();
@@ -109,59 +109,65 @@ function VideoEditorInterface({
       const renderedWidth = bgElement.clientWidth;
       const renderedHeight = bgElement.clientHeight;
 
-      if (aspectRatio !== null) {
-        if (originalWidth > originalHeight) {
-          setBgResolutionType(true);
-          setStyleCoverImageL("bg-black absolute top-0 left-0");
-          setStyleCoverImageR("bg-black absolute top-0 right-0");
-          switch (aspectRatio) {
-            case 16:
-              setCoverImageHeight(renderedHeight);
-              setCoverImageWidth(
-                Math.abs((renderedWidth - (renderedHeight * 16) / 9) / 2)
-              );
-              break;
+      if (originalWidth > originalHeight) {
+        setBgResolutionType(true);
+        setStyleCoverImageL("bg-black absolute top-0 -left-[1px]");
+        setStyleCoverImageR("bg-black absolute top-0 -right-[1px]");
+        switch (aspectRatio) {
+          case 16:
+            setCoverImageHeight(renderedHeight);
+            setCoverImageWidth(
+              Math.abs((renderedWidth - (renderedHeight * 16) / 9) / 2 + 2)
+            );
+            break;
 
-            case 1:
-              setCoverImageHeight(renderedHeight);
-              setCoverImageWidth(
-                Math.abs((renderedWidth - renderedHeight) / 2)
-              );
-              break;
+          case 1:
+            setCoverImageHeight(renderedHeight);
+            setCoverImageWidth(
+              Math.abs((renderedWidth - renderedHeight) / 2 + 2)
+            );
+            break;
 
-            default:
-              setCoverImageHeight(renderedHeight);
-              setCoverImageWidth(
-                Math.abs((renderedWidth - (renderedHeight * 4) / 3) / 2)
-              );
-              break;
-          }
-        } else {
-          setBgResolutionType(false);
-          setStyleCoverImageL("bg-black absolute top-0 left-0");
-          setStyleCoverImageR("bg-black absolute bottom-0 right-0");
-          switch (aspectRatio) {
-            case 16:
-              setCoverImageHeight(
-                Math.abs((renderedHeight - (renderedWidth * 9) / 16) / 2)
-              );
-              setCoverImageWidth(renderedWidth);
-              break;
+          case 4:
+            setCoverImageHeight(renderedHeight);
+            setCoverImageWidth(
+              Math.abs((renderedWidth - (renderedHeight * 4) / 3) / 2 + 2)
+            );
+            break;
 
-            case 1:
-              setCoverImageHeight(
-                Math.abs((renderedHeight - renderedWidth) / 2)
-              );
-              setCoverImageWidth(renderedWidth);
-              break;
+          default:
+            setCoverImageHeight(0);
+            setCoverImageWidth(0);
+            break;
+        }
+      } else {
+        setBgResolutionType(false);
+        setStyleCoverImageL("bg-black absolute top-0 -left-[1px]");
+        setStyleCoverImageR("bg-black absolute bottom-0 -right-[1px]");
+        switch (aspectRatio) {
+          case 16:
+            setCoverImageHeight(
+              Math.abs((renderedHeight - (renderedWidth * 9) / 16) / 2)
+            );
+            setCoverImageWidth(renderedWidth + 2);
+            break;
 
-            default:
-              setCoverImageHeight(
-                Math.abs((renderedHeight - (renderedWidth * 3) / 4) / 2)
-              );
-              setCoverImageWidth(renderedWidth);
-              break;
-          }
+          case 1:
+            setCoverImageHeight(Math.abs((renderedHeight - renderedWidth) / 2));
+            setCoverImageWidth(renderedWidth + 2);
+            break;
+
+          case 4:
+            setCoverImageHeight(
+              Math.abs((renderedHeight - (renderedWidth * 3) / 4) / 2)
+            );
+            setCoverImageWidth(renderedWidth + 2);
+            break;
+
+          default:
+            setCoverImageHeight(0);
+            setCoverImageWidth(0);
+            break;
         }
       }
 

@@ -22,6 +22,7 @@ import axios from "axios";
 import EventBus from "../../utils/EventBus.jsx";
 
 const screenRatio = ["16:9", "1:1", "4:3"];
+let previousRatioOption = 3;
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
@@ -72,6 +73,7 @@ export const Main = ({ setVideoFile, setOverlays, setAspectRatio }) => {
         setAspectRatio(4);
         break;
       default:
+        setAspectRatio(null);
         break;
     }
   }, [ratio]);
@@ -317,7 +319,13 @@ export const Main = ({ setVideoFile, setOverlays, setAspectRatio }) => {
                   ratio == index ? "bg-sky-600" : "bg-black"
                 }`}
                 onClick={() => {
-                  setRatio(index);
+                  if (previousRatioOption === index) {
+                    setRatio(3);
+                    previousRatioOption = 3;
+                  } else {
+                    setRatio(index);
+                    previousRatioOption = index;
+                  }
                 }}
               >
                 {value}
