@@ -355,25 +355,33 @@ function VideoEditorInterface({
       }
     }
 
+    let musicLink = JSON.parse(localStorage.getItem("SelectedMusic"))?.s3_url;
+    console.log(musicLink);
+
     try {
       aspectFFmpegCommand = [
         "-i",
         `./src/utils/public/output_${fileName}.mp4`,
+        `${musicLink ? "-i" : ""}`,
+        `${musicLink ? musicLink : ""}`,
         "-vf",
         `${aspectFilter}`,
+        "-shortest",
         `./src/utils/public/output_${fileName}_result.mp4`,
       ];
-    } catch (error) {}
-    var musicLink = JSON.parse(localStorage.getItem('SelectedMusic'))?.s3_url
+    } catch (error) {
+      return;
+    }
+
     console.log(ffmpegCommand);
-    console.log(musicLink)
+    console.log(aspectFFmpegCommand);
+
     try {
       await axios
         .post(`http://3.143.204.91:4000/api/editor`, {
           command: ffmpegCommand,
           aspectCommand: aspectFFmpegCommand,
           fileName: `output_${fileName}_result.mp4`,
-          musicLink: musicLink
         })
         .then(async (res) => {
           // console.log(res.data.message);
@@ -393,8 +401,6 @@ function VideoEditorInterface({
 
     EventBus.dispatch("setLoading", false);
   };
-
-  // ffmpeg - i 2.mp4 - vf "crop=w=iw:h=(iw*9/16)" output.mp4
 
   return (
     <div className="bg-black w-[80%] h-full border-dashed border-2 border-sky-500 flex items-center justify-center relative">
