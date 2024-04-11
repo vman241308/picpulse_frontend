@@ -29,7 +29,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
-import DeleteIcon from "@mui/icons-material/Delete";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 
 
@@ -120,6 +121,7 @@ export const MusicDialog = ({
   const descriptionElementRef = React.useRef(null);
   const theme = useTheme();
   const [selectedMusic, setSelectedMusic] = useState(localStorage.getItem('SelectedMusic'))
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
     if (openMusicDialog) {
@@ -169,11 +171,31 @@ export const MusicDialog = ({
 
   const download = async (item, index) => {
     localStorage.setItem('SelectedMusic', JSON.stringify(item))
+
+     // Initialize new Audio object
+    const audio = new Audio(item.s3_url);
+
+    // This will loop the audio
+    audio.loop = true;
+    
+    // This will start the playback
+    audio.play();
+
+    // Set the Snackbar to open
+    setOpenSnackbar(true);
+
     // setLinerIndex(index);
     // setIsDownloading(true);
     // setMusicFile({ url: item.s3_url, type: "video" });
     // setDownloadedData((prevDownloaded) => [...prevDownloaded, item]);
     // setIsDownloading(false);
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
   };
 
   return (
@@ -285,6 +307,11 @@ export const MusicDialog = ({
           </Box>
         </DialogContentText>
       </DialogContent>
+      <Snackbar open={openSnackbar} autoHideDuration={2000} onClose={handleCloseSnackbar}>
+        <MuiAlert onClose={handleCloseSnackbar} severity="success" elevation={6} variant="filled">
+          Music has been downloaded successfully!
+        </MuiAlert>
+      </Snackbar>
     </Dialog>
   );
 };
