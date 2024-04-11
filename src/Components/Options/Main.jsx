@@ -58,7 +58,7 @@ export const Main = ({ setVideoFile, setOverlays, setAspectRatio }) => {
   const [selectedCategory, setSelectedCategory] = useState({});
   const [ratio, setRatio] = useState(3);
   const [groundType, setGroundType] = useState("");
-  const [addedOverlays, setAddedOverlays] = useState([]);
+  const descriptionElementRef = React.useRef(null);
 
   useEffect(() => {
     switch (ratio) {
@@ -98,7 +98,12 @@ export const Main = ({ setVideoFile, setOverlays, setAspectRatio }) => {
     setOpen(false);
   };
 
-  const descriptionElementRef = React.useRef(null);
+  useEffect(() => {
+    fal.config({
+      credentials: `${import.meta.env.VITE_REACT_APP_FAL_KEY}`,
+    });
+  }, []);
+
   useEffect(() => {
     if (open) {
       const { current: descriptionElement } = descriptionElementRef;
@@ -273,12 +278,6 @@ export const Main = ({ setVideoFile, setOverlays, setAspectRatio }) => {
     }
   };
 
-  const setFalConfig = () => {
-    fal.config({
-      credentials: `${import.meta.env.VITE_REACT_APP_FAL_KEY}`,
-    });
-  };
-
   return (
     <div className="flex bg-black">
       <div className="flex flex-row items-center justify-center w-full h-36">
@@ -361,7 +360,6 @@ export const Main = ({ setVideoFile, setOverlays, setAspectRatio }) => {
               backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
             }}
-            onClick={setFalConfig}
           >
             <input
               type="file"
