@@ -364,14 +364,16 @@ function VideoEditorInterface({
         `./src/utils/public/output_${fileName}_result.mp4`,
       ];
     } catch (error) {}
-
+    var musicLink = JSON.parse(localStorage.getItem('SelectedMusic'))?.s3_url
     console.log(ffmpegCommand);
+    console.log(musicLink)
     try {
       await axios
         .post(`http://3.143.204.91:4000/api/editor`, {
           command: ffmpegCommand,
           aspectCommand: aspectFFmpegCommand,
           fileName: `output_${fileName}_result.mp4`,
+          musicLink: musicLink
         })
         .then(async (res) => {
           // console.log(res.data.message);
