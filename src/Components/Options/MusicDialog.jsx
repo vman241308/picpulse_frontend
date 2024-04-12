@@ -23,16 +23,12 @@ import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-
-
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -112,6 +108,7 @@ TabPanel.propTypes = {
 export const MusicDialog = ({
   audio,
   setAudio,
+  setIsPlaying,
   setOpen,
   openMusicDialog,
   selectedMusicCategory,
@@ -123,7 +120,6 @@ export const MusicDialog = ({
   const descriptionElementRef = React.useRef(null);
   const theme = useTheme();
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  
 
   useEffect(() => {
     if (openMusicDialog) {
@@ -142,18 +138,26 @@ export const MusicDialog = ({
     // setLoading(true)
     var result = [];
     var musicData = [];
-    if (localStorage.getItem("SelectedMusicCategory") === JSON.stringify(selectedMusicCategory)) {
+    if (
+      localStorage.getItem("SelectedMusicCategory") ===
+      JSON.stringify(selectedMusicCategory)
+    ) {
       result = JSON.parse(localStorage.getItem("SelectedMusicData"));
       setData(result);
     } else {
-      
       result = await axios(
         `http://18.218.107.206/greenscreen/public/service.php?type=get_music_assets&category_id=${selectedMusicCategory.id}`
       );
       musicData = result.data.data;
       setData(musicData);
-      localStorage.setItem("SelectedMusicCategory", JSON.stringify(selectedMusicCategory));
-      localStorage.setItem("SelectedMusicCategoryData", JSON.stringify(musicData));
+      localStorage.setItem(
+        "SelectedMusicCategory",
+        JSON.stringify(selectedMusicCategory)
+      );
+      localStorage.setItem(
+        "SelectedMusicCategoryData",
+        JSON.stringify(musicData)
+      );
     }
     // setLoading(false);
   };
@@ -164,7 +168,7 @@ export const MusicDialog = ({
   const handleChangeIndex = (index) => setValue(index);
 
   const handleToggle = (value) => () => {
-    console.log('valule::', value)
+    console.log("valule::", value);
   };
 
   const download = async (item, index) => {
@@ -180,8 +184,9 @@ export const MusicDialog = ({
       audio.pause();
       audio.currentTime = 0;
     }
+    newAudio.dataset.audioname = item.title;
     setAudio(newAudio);
-    
+    setIsPlaying(true);
     // This will start the playback
     newAudio.play();
 
@@ -204,7 +209,7 @@ export const MusicDialog = ({
   // }, [audio]);
 
   const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setOpenSnackbar(false);
@@ -229,8 +234,8 @@ export const MusicDialog = ({
           <IconButton
             aria-label="delete"
             onClick={() => {
-              handleCloseMusicDialog()
-              setOpen(true)
+              handleCloseMusicDialog();
+              setOpen(true);
               // localStorage.setItem("SelectedForegroundCategoryData", "")
               // localStorage.setItem('SelectedFgCategory', "")
             }}
@@ -272,7 +277,7 @@ export const MusicDialog = ({
               </Search>
             </Toolbar>
           </Box>
-          <Box sx={{ bgcolor: "background.paper", padding:'0' }}>
+          <Box sx={{ bgcolor: "background.paper", padding: "0" }}>
             <Tabs
               value={value}
               onChange={handleChange}
@@ -290,37 +295,58 @@ export const MusicDialog = ({
             >
               <TabPanel value={value} index={0} dir={theme.direction}>
                 <Box height={530} disablePadding>
-                    <List sx={{ width: '100%', bgcolor: 'background.paper'}} disablePadding>
-                      {data?.map((item, index) => {
-                        const labelId = `checkbox-list-label-${index}`;
-                        return (
-                          <ListItem
-                            key={index}
-                            secondaryAction={
-                              <div>
-                                <IconButton onClick={() => {download(item, index);}} edge="end" aria-label="CloudDownLoadIcon" style={{margin:'10px'}}>
-                                  <CloudDownloadIcon />
-                                </IconButton>
-                              </div>
-                            }
-                            disablePadding
-                          >
-                            <ListItemButton onClick={handleToggle(value)} dense>
-                              <ListItemText id={labelId} primary={`${index+1} - ${item.title}`} />
-                            </ListItemButton>
-                          </ListItem>
-                        );
-                      })}
-                    </List>
+                  <List
+                    sx={{ width: "100%", bgcolor: "background.paper" }}
+                    disablePadding
+                  >
+                    {data?.map((item, index) => {
+                      const labelId = `checkbox-list-label-${index}`;
+                      return (
+                        <ListItem
+                          key={index}
+                          secondaryAction={
+                            <div>
+                              <IconButton
+                                onClick={() => {
+                                  download(item, index);
+                                }}
+                                edge="end"
+                                aria-label="CloudDownLoadIcon"
+                                style={{ margin: "10px" }}
+                              >
+                                <CloudDownloadIcon />
+                              </IconButton>
+                            </div>
+                          }
+                          disablePadding
+                        >
+                          <ListItemButton onClick={handleToggle(value)} dense>
+                            <ListItemText
+                              id={labelId}
+                              primary={`${index + 1} - ${item.title}`}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      );
+                    })}
+                  </List>
                 </Box>
               </TabPanel>
-              
             </SwipeableViews>
           </Box>
         </DialogContentText>
       </DialogContent>
-      <Snackbar open={openSnackbar} autoHideDuration={2000} onClose={handleCloseSnackbar}>
-        <MuiAlert onClose={handleCloseSnackbar} severity="success" elevation={6} variant="filled">
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        onClose={handleCloseSnackbar}
+      >
+        <MuiAlert
+          onClose={handleCloseSnackbar}
+          severity="success"
+          elevation={6}
+          variant="filled"
+        >
           Music has been downloaded successfully!
         </MuiAlert>
       </Snackbar>

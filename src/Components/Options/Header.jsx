@@ -16,6 +16,11 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import FolderIcon from "@mui/icons-material/Folder";
 import { MusicDialog } from "./MusicDialog.jsx";
+import Divider from "@mui/material/Divider";
+import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
+import PauseIcon from "@mui/icons-material/Pause";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const Header = ({ audio, setAudio }) => {
   const [open, setOpen] = useState(false);
@@ -23,6 +28,7 @@ const Header = ({ audio, setAudio }) => {
   const [scroll, setScroll] = useState("paper");
   const [MusicCategoryList, setMusicCategoryList] = useState([]);
   const [selectedMusicCategory, setSelectedMusicCategory] = useState({});
+  const [isPlaying, setIsPlaying] = useState(true);
 
   const handleListItemClick = (item) => {
     setOpen(false);
@@ -155,11 +161,62 @@ const Header = ({ audio, setAudio }) => {
                       ),
                     }}
                   />
+                  {audio ? (
+                    <>
+                      <List
+                        component="nav"
+                        aria-label="main mailbox folders"
+                        disablePadding
+                      >
+                        <ListItemButton disablePadding>
+                          <ListItemIcon>
+                            <LibraryMusicIcon />
+                          </ListItemIcon>
+                          <ListItemText primary={audio?.dataset.audioname} />
+                          {isPlaying ? (
+                            <>
+                              <img
+                                alt="Graph animation"
+                                src="src/assets/audioPlayer.gif"
+                                style={{ width: "150px", height: "24px" }}
+                              />
+                              <PauseIcon
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  audio.pause();
+                                  setIsPlaying(false);
+                                }}
+                              />
+                            </>
+                          ) : (
+                            <PlayArrowIcon
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                audio.play();
+                                setIsPlaying(true);
+                              }}
+                            />
+                          )}
+                          <DeleteIcon
+                            onClick={() => {
+                              audio.pause();
+                              audio.currentTime = 0;
+                              setAudio(null);
+                            }}
+                          />
+                        </ListItemButton>
+                      </List>
+                      <Divider />
+                    </>
+                  ) : (
+                    ""
+                  )}
+
                   <Box
                     sx={{
                       width: "100%",
                       bgcolor: "background.paper",
-                      height: "620px",
+                      height: audio ? "570px" : "620px",
                       overflow: "auto",
                     }}
                   >
@@ -192,6 +249,7 @@ const Header = ({ audio, setAudio }) => {
       <MusicDialog
         audio={audio}
         setAudio={setAudio}
+        setIsPlaying={setIsPlaying}
         setOpen={setOpen}
         openMusicDialog={openMusicDialog}
         selectedMusicCategory={selectedMusicCategory}
