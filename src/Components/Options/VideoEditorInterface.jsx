@@ -369,8 +369,7 @@ function VideoEditorInterface({
           break;
       }
     }
-
-    let musicLink = audio?.src;
+    let musicLink = !audio?.paused && audio?.src;
     console.log(musicLink);
 
     try {
@@ -406,7 +405,6 @@ function VideoEditorInterface({
           fileName: `output_${fileName}_result.mp4`,
         })
         .then(async (res) => {
-          // console.log(res.data.message);
           const response = await fetch(res.data.message);
           const blob = await response.blob();
           const blobUrl = URL.createObjectURL(blob);

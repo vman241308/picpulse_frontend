@@ -39,7 +39,7 @@ function Editor() {
         <CircularProgress style={{ width: "70px", height: "70px" }} />
       </div>
       <Header audio={audio} setAudio={setAudio} />
-      <VideoEditor audio={audio}/>
+      <VideoEditor audio={audio} />
     </div>
   );
 }
