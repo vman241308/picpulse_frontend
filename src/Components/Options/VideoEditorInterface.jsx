@@ -288,7 +288,7 @@ function VideoEditorInterface({
     }
 
     try {
-      let bgscale = `[0:v]scale=${bgWidth}:${bgHeight}[v0]`;
+      let bgscale = `[0:v]scale=trunc(iw/2)*2:trunc(ih/2)*2[v0]`;
 
       overlayPositions.length > 0
         ? (ffmpegCommand = [
@@ -322,14 +322,14 @@ function VideoEditorInterface({
             `./src/utils/public/output_${fileName}.mp4`,
           ])
         : (ffmpegCommand = [
+            `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
+            "1",
             "-i",
             `${videoFile}`,
-            "-c:a",
-            "copy",
+            "-vf",
+            "scale=trunc(iw/2)*2:trunc(ih/2)*2",
             "-t",
             `${duration}`,
-            "-preset",
-            "ultrafast",
             `./src/utils/public/output_${fileName}.mp4`,
           ]);
     } catch (error) {
