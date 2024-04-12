@@ -29,6 +29,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -323,7 +324,12 @@ export const MusicDialog = ({
                           <ListItemButton onClick={handleToggle(value)} dense>
                             <ListItemText
                               id={labelId}
-                              primary={`${index + 1} - ${item.title}`}
+                              primary={
+                                <>
+                                  <MusicNoteIcon />
+                                  {`${item.title}`}
+                                </>
+                              }
                             />
                           </ListItemButton>
                         </ListItem>
