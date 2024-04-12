@@ -7,6 +7,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 function Editor() {
   const [isLoading, setIsLoading] = useState(false);
+  const [audio, setAudio] = useState(null);
 
   const setLoading = (data) => {
     setIsLoading(data);
@@ -37,8 +38,8 @@ function Editor() {
       >
         <CircularProgress style={{ width: "70px", height: "70px" }} />
       </div>
-      <Header />
-      <VideoEditor />
+      <Header audio={audio} setAudio={setAudio} />
+      <VideoEditor audio={audio} />
     </div>
   );
 }

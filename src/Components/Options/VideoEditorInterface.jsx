@@ -17,11 +17,35 @@ function VideoEditorInterface({
   overlays,
   playerRef,
   setOverlays,
+  aspectRatio,
+  audio,
 }) {
   const [scaleX, setScaleX] = useState(1); // Horizontal scaling factor
   const [scaleY, setScaleY] = useState(1); // Vertical scaling factor
   const [recordingStatus, setRecordingStatus] = useState();
   const [overlayPositions, setOverlayPositions] = useState([]);
+  const [bgWidth, setBgWidth] = useState(0);
+  const [bgHeight, setBgHeight] = useState(0);
+
+  const [coverImageWidth, setCoverImageWidth] = useState(0);
+  const [coverImageHeight, setCoverImageHeight] = useState(0);
+
+  const [styleCoverImageL, setStyleCoverImageL] = useState("");
+  const [styleCoverImageR, setStyleCoverImageR] = useState("");
+  const [bgResolutionType, setBgResolutionType] = useState(true);
+
+  useEffect(() => {
+    if (bgRef.current && backgroundType === "video") {
+      bgRef.current.load();
+    }
+
+    let img = new window.Image();
+    img.onload = () => {
+      setBgWidth(img.width % 2 == 1 ? img.width + 1 : img.width);
+      setBgHeight(img.height % 2 == 1 ? img.height + 1 : img.height);
+    };
+    img.src = videoFile;
+  }, [videoFile]);
 
   useEffect(() => {
     if (recordingStatus === undefined) return;
@@ -35,19 +59,11 @@ function VideoEditorInterface({
   }, [recordingStatus]);
 
   useEffect(() => {
-    overlays?.forEach((overlayPath, index) => {
+    if (overlays.length > 0 && overlays.length > overlayPositions.length) {
+      let overlayPath = overlays[overlays.length - 1];
       const lastIndex = overlayPath.lastIndexOf("/");
       const overlayName = overlayPath.substring(lastIndex + 1);
       const overlayFileName = `${overlayName}.png`;
-
-      const fileExists = overlayPositions.some(
-        (position) => position.fileNameFFMPEG == overlayFileName
-      );
-
-      if (fileExists) {
-        return;
-      }
-
       setOverlayPositions((prevPositions) => {
         return [
           ...prevPositions,
@@ -58,8 +74,24 @@ function VideoEditorInterface({
           },
         ];
       });
-    });
+    } else if (overlays.length === 0) {
+      setOverlayPositions([]);
+    }
   }, [overlays]);
+
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     handleMetadataLoaded();
+  //   };
+
+  //   window.addEventListener("resize", handleResize);
+
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
+
+  useEffect(() => {
+    handleMetadataLoaded();
+  }, [aspectRatio]);
 
   const handleMetadataLoaded = () => {
     const bgElement = bgRef.current;
@@ -75,14 +107,72 @@ function VideoEditorInterface({
         originalHeight = bgElement.naturalHeight;
       }
 
-      const aspectRatio = originalWidth / originalHeight;
-      const containerHeight = window.innerHeight * 0.7; // 70vh
-      const newWidth = containerHeight * aspectRatio;
-
-      bgElement.parentElement.style.width = `${newWidth}px`;
-
       const renderedWidth = bgElement.clientWidth;
       const renderedHeight = bgElement.clientHeight;
+
+      if (originalWidth > originalHeight) {
+        setBgResolutionType(true);
+        setStyleCoverImageL("bg-black absolute top-0 -left-[1px]");
+        setStyleCoverImageR("bg-black absolute top-0 -right-[1px]");
+        switch (aspectRatio) {
+          case 16:
+            setCoverImageHeight(renderedHeight + 2);
+            setCoverImageWidth(
+              Math.abs((renderedWidth - (renderedHeight * 16) / 9) / 2) + 2
+            );
+            break;
+
+          case 1:
+            setCoverImageHeight(renderedHeight + 2);
+            setCoverImageWidth(
+              Math.abs((renderedWidth - renderedHeight) / 2) + 2
+            );
+            break;
+
+          case 4:
+            setCoverImageHeight(renderedHeight + 2);
+            setCoverImageWidth(
+              Math.abs((renderedWidth - (renderedHeight * 4) / 3) / 2) + 2
+            );
+            break;
+
+          default:
+            setCoverImageHeight(0);
+            setCoverImageWidth(0);
+            break;
+        }
+      } else {
+        setBgResolutionType(false);
+        setStyleCoverImageL("bg-black absolute top-0 -left-[1px]");
+        setStyleCoverImageR("bg-black absolute bottom-0 -right-[1px]");
+        switch (aspectRatio) {
+          case 16:
+            setCoverImageHeight(
+              Math.abs((renderedHeight - (renderedWidth * 9) / 16) / 2) + 2
+            );
+            setCoverImageWidth(renderedWidth + 2);
+            break;
+
+          case 1:
+            setCoverImageHeight(
+              Math.abs((renderedHeight - renderedWidth) / 2) + 2
+            );
+            setCoverImageWidth(renderedWidth + 2);
+            break;
+
+          case 4:
+            setCoverImageHeight(
+              Math.abs((renderedHeight - (renderedWidth * 3) / 4) / 2) + 2
+            );
+            setCoverImageWidth(renderedWidth + 2);
+            break;
+
+          default:
+            setCoverImageHeight(0);
+            setCoverImageWidth(0);
+            break;
+        }
+      }
 
       setScaleX(originalWidth / renderedWidth);
       setScaleY(originalHeight / renderedHeight);
@@ -95,7 +185,8 @@ function VideoEditorInterface({
     finalY,
     width,
     heigth,
-    rotation
+    rotation,
+    imgIndex
   ) => {
     const newMovement = {
       x: finalX,
@@ -106,8 +197,8 @@ function VideoEditorInterface({
       frame: 1,
     };
     setOverlayPositions((prevPositions) => {
-      return prevPositions.map((item) => {
-        if (item.overlayPath === overlayPath) {
+      return prevPositions.map((item, index) => {
+        if (item.overlayPath === overlayPath && index === imgIndex) {
           const existingMovementIndex = item.timeline.findIndex(
             (movement) => movement.frame === newMovement.frame
           );
@@ -135,14 +226,21 @@ function VideoEditorInterface({
     });
   };
 
-  const removeOverlay = (url) => {
-    setOverlays(overlays.filter((item) => item !== url));
+  const removeOverlay = (imgIndex, url) => {
+    setOverlays((overlays) =>
+      overlays.filter((overlay, index) => index !== imgIndex)
+    );
+    const newOverlayPositions = overlayPositions.filter(
+      (o, index) => index !== imgIndex
+    );
+    setOverlayPositions(newOverlayPositions);
   };
 
   const renderVideo = async (duration) => {
     EventBus.dispatch("setLoading", true);
     let fileName = new Date().getTime();
     let ffmpegCommand = "";
+    let aspectFFmpegCommand = "";
 
     function generateOverlayFilters() {
       return overlayPositions
@@ -162,13 +260,15 @@ function VideoEditorInterface({
             let resizeOverlay = `[${overlayIndex + 1}:v]scale=${
               timeline.width
             }:${timeline.height}${rotateOverlay}[scaled${overlayIndex + 1}];`; //<---THIS WORKS, rotation is breaking it
-            let chainStart =
-              overlayIndex > 0
-                ? `${resizeOverlay}[v${overlayIndex}][scaled${
-                    overlayIndex + 1
-                  }]`
-                : `${resizeOverlay}[0:v][scaled${overlayIndex + 1}]`;
-
+            // let chainStart =
+            //   overlayIndex > 0
+            //     ? `${resizeOverlay}[v${overlayIndex}][scaled${
+            //         overlayIndex + 1
+            //       }]`
+            //     : `${resizeOverlay}[0:v][scaled${overlayIndex + 1}]`;
+            let chainStart = `${resizeOverlay}[v${overlayIndex}][scaled${
+              overlayIndex + 1
+            }]`;
             let chainSuffix;
 
             if (overlayPositions.length > 1) {
@@ -180,6 +280,7 @@ function VideoEditorInterface({
               chainSuffix = `[out]`;
             }
 
+            // return `${chainStart}overlay=${timeline.x}:${timeline.y}${chainSuffix}`;
             return `${chainStart}overlay=${timeline.x}:${timeline.y}${chainSuffix}`;
           })
         )
@@ -187,21 +288,16 @@ function VideoEditorInterface({
     }
 
     try {
+      let bgscale = `[0:v]scale=trunc(iw/2)*2:trunc(ih/2)*2[v0]`;
+
       overlayPositions.length > 0
         ? (ffmpegCommand = [
-            "-hwaccel",
-            "cuda",
+            // "-hwaccel",
+            // "cuda",
             "-i",
             `${videoFile}`,
             // Include each overlay as an input
             ...overlayPositions
-              .filter(
-                (overlay, index, self) =>
-                  index ===
-                  self.findIndex(
-                    (o) => o.fileNameFFMPEG === overlay.fileNameFFMPEG
-                  )
-              )
               .map((overlay) => [
                 "-stream_loop",
                 "-1",
@@ -210,7 +306,7 @@ function VideoEditorInterface({
               ])
               .flat(),
             "-filter_complex",
-            `${generateOverlayFilters()}`,
+            `${bgscale};${generateOverlayFilters()}`,
             "-map",
             `[out]`,
             "-r",
@@ -221,34 +317,94 @@ function VideoEditorInterface({
             "-t",
             `${duration}`,
             "-c:v",
-            "h264_nvenc",
+            // "h264_nvenc",
+            "libx264",
             `./src/utils/public/output_${fileName}.mp4`,
           ])
         : (ffmpegCommand = [
+            `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
+            "1",
             "-i",
             `${videoFile}`,
-            "-c:a",
-            "copy",
+            "-vf",
+            "scale=trunc(iw/2)*2:trunc(ih/2)*2",
             "-t",
             `${duration}`,
-            "-preset",
-            "ultrafast",
             `./src/utils/public/output_${fileName}.mp4`,
           ]);
     } catch (error) {
       return;
     }
 
-    // console.log(ffmpegCommand);
+    let aspectFilter = "";
+
+    if (bgResolutionType) {
+      switch (aspectRatio) {
+        case 16:
+          aspectFilter = "crop=ih*16/9:ih";
+          break;
+        case 1:
+          aspectFilter = "crop=ih:ih";
+          break;
+        case 4:
+          aspectFilter = "crop=ih*4/3:ih";
+          break;
+        default:
+          aspectFilter = "crop=iw:ih";
+          break;
+      }
+    } else {
+      switch (aspectRatio) {
+        case 16:
+          aspectFilter = "crop=iw:iw*9/16";
+          break;
+        case 1:
+          aspectFilter = "crop=iw:iw";
+          break;
+        case 4:
+          aspectFilter = "crop=iw:iw*3/4";
+          break;
+        default:
+          aspectFilter = "crop=iw:ih";
+          break;
+      }
+    }
+    let musicLink = !audio?.paused && audio?.src;
+    console.log(musicLink);
+
+    try {
+      musicLink
+        ? (aspectFFmpegCommand = [
+            "-i",
+            `./src/utils/public/output_${fileName}.mp4`,
+            "-i",
+            `${musicLink}`,
+            "-vf",
+            `${aspectFilter}`,
+            "-shortest",
+            `./src/utils/public/output_${fileName}_result.mp4`,
+          ])
+        : (aspectFFmpegCommand = [
+            "-i",
+            `./src/utils/public/output_${fileName}.mp4`,
+            "-vf",
+            `${aspectFilter}`,
+            `./src/utils/public/output_${fileName}_result.mp4`,
+          ]);
+    } catch (error) {
+      return;
+    }
+    console.log(ffmpegCommand);
+    console.log(aspectFFmpegCommand);
 
     try {
       await axios
         .post(`http://3.143.204.91:4000/api/editor`, {
           command: ffmpegCommand,
-          fileName: `output_${fileName}.mp4`,
+          aspectCommand: aspectFFmpegCommand,
+          fileName: `output_${fileName}_result.mp4`,
         })
         .then(async (res) => {
-          // console.log(res.data.message);
           const response = await fetch(res.data.message);
           const blob = await response.blob();
           const blobUrl = URL.createObjectURL(blob);
@@ -268,46 +424,55 @@ function VideoEditorInterface({
 
   return (
     <div className="bg-black w-[80%] h-full border-dashed border-2 border-sky-500 flex items-center justify-center relative">
-      <div className="w-full h-full flex items-center justify-center absolute">
-        {backgroundType === "video" ? (
-          <video
-            ref={bgRef}
-            loop
-            autoPlay
-            className="h-[95%] w-auto video-js"
-            id="video-js"
-            onLoadedMetadata={handleMetadataLoaded}
-          >
-            <source src={videoFile} type="video/mp4" />
-          </video>
-        ) : (
-          <img
-            ref={bgRef}
-            src={videoFile}
-            className="h-[95%] w-auto video-js"
-            id="video-js"
-            onLoad={handleMetadataLoaded}
-          ></img>
-        )}
-
-        {videoFile &&
-          overlays?.map((image, index) => (
-            <Image
-              key={index}
-              image={image}
-              index={index}
-              handleMovement={handleMovement}
-              handleResize={handleResize}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              removeOverlay={removeOverlay}
+      <div className="flex items-center justify-center w-full h-full">
+        <div className="w-max h-[95%] relative">
+          <div
+            className={styleCoverImageL}
+            style={{ height: coverImageHeight, width: coverImageWidth }}
+          ></div>
+          <div
+            className={styleCoverImageR}
+            style={{ height: coverImageHeight, width: coverImageWidth }}
+          ></div>
+          {backgroundType === "video" ? (
+            <video
+              ref={bgRef}
+              loop
+              autoPlay
+              className="w-auto h-full video-js"
+              id="video-js"
+              onLoadedMetadata={handleMetadataLoaded}
+              src={videoFile}
             />
-          ))}
+          ) : (
+            <img
+              ref={bgRef}
+              src={videoFile}
+              className="w-auto h-full video-js"
+              id="video-js"
+              onLoad={handleMetadataLoaded}
+            ></img>
+          )}
+
+          {videoFile &&
+            overlays?.map((image, index) => (
+              <Image
+                key={index}
+                image={image}
+                index={index}
+                handleMovement={handleMovement}
+                handleResize={handleResize}
+                scaleX={scaleX}
+                scaleY={scaleY}
+                removeOverlay={removeOverlay}
+              />
+            ))}
+        </div>
       </div>
-      <div className="absolute -bottom-24 z-50">
+      <div className="absolute z-50 -bottom-24">
         {recordingStatus ? (
           <img
-            className="w-16 h-16 hover:brightness-75 cursor-pointer"
+            className="w-16 h-16 cursor-pointer hover:brightness-75"
             src={RecordingIco}
             onClick={() => {
               setRecordingStatus(false);
@@ -315,7 +480,7 @@ function VideoEditorInterface({
           />
         ) : (
           <div
-            className="w-16 h-16 bg-red-600 hover:bg-red-500 rounded-full cursor-pointer"
+            className="w-16 h-16 bg-red-600 rounded-full cursor-pointer hover:bg-red-500"
             onClick={() => {
               setRecordingStatus(true);
             }}

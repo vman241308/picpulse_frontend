@@ -41,11 +41,45 @@ function Image({
       image,
       finalX,
       finalY,
-      (e.width || prevWidth) * scaleX,
-      (e.height || prevHeight) * scaleY,
-      rotation
+      // targetRect.width * scaleX,
+      // targetRect.height * scaleY,
+      targetRef.current.clientWidth * scaleX,
+      targetRef.current.clientHeight * scaleY,
+      rotation,
+      index
     );
   };
+
+  const handleMetadataLoaded = () => {
+    const targetRect = targetRef.current.getBoundingClientRect();
+    const parentRect = document
+      .querySelector(".video-js")
+      .getBoundingClientRect();
+
+    let finalX = (targetRect.left - parentRect.left) * scaleX;
+    let finalY = (targetRect.top - parentRect.top) * scaleY;
+
+    handleMovement(
+      image,
+      finalX,
+      finalY,
+      targetRef.current.clientWidth * scaleX,
+      targetRef.current.clientHeight * scaleY,
+      0,
+      0
+    );
+  };
+
+  useEffect(() => {
+    let img = new window.Image();
+    img.onload = () => {
+      if (targetRef.current) {
+        targetRef.current.style.backgroundImage = `url(${img.src})`;
+      }
+    };
+    img.src = image;
+    handleMetadataLoaded();
+  }, [image]);
 
   return (
     <div
@@ -56,26 +90,24 @@ function Image({
       className={`draggable-${index}`}
       id={`draggable${index}`}
     >
-      <img
-        className="target"
+      <div
         ref={targetRef}
-        src={image}
+        style={{
+          background: `url(${image}) no-repeat`,
+          backgroundSize: "100% 100%",
+          width: "640px",
+          height: "480px",
+        }}
         onDoubleClick={() => {
-          removeOverlay(image);
+          removeOverlay(index, image);
         }}
       />
       <Moveable
         target={targetRef}
         draggable={true}
-        resizable={true}
-        originDraggable={true}
+        scalable={true}
         rotatable={true}
-        throttleDrag={1}
-        edgeDraggable={false}
-        startDragRotate={0}
-        throttleDragRotate={0}
-        throttleResize={1}
-        renderDirections={["nw", "n", "ne", "w", "e", "sw", "s", "se"]}
+        resizable={true}
         onDrag={(e) => {
           e.target.style.transform = e.transform;
           handleNewUserInteraction(e);
