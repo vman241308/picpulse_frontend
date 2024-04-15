@@ -48,6 +48,11 @@ function VideoEditorInterface({
   }, [videoFile]);
 
   useEffect(() => {
+    setOverlayPositions([]);
+    setOverlays([]);
+  }, [videoFile]);
+
+  useEffect(() => {
     if (recordingStatus === undefined) return;
     if (recordingStatus) {
       recordingStartTime = new Date().getTime();
@@ -196,6 +201,7 @@ function VideoEditorInterface({
       rotation: rotation,
       frame: 1,
     };
+
     setOverlayPositions((prevPositions) => {
       return prevPositions.map((item, index) => {
         if (item.overlayPath === overlayPath && index === imgIndex) {
@@ -272,10 +278,11 @@ function VideoEditorInterface({
             let chainSuffix;
 
             if (overlayPositions.length > 1) {
-              chainSuffix =
-                overlayIndex === overlayPositions.length - 1
-                  ? `[out]`
-                  : `[v${overlayIndex + 1}]`;
+              if (overlayIndex == overlayPositions.length - 1) {
+                chainSuffix = `[out]`;
+              } else {
+                chainSuffix = `[v${overlayIndex + 1}]`;
+              }
             } else {
               chainSuffix = `[out]`;
             }

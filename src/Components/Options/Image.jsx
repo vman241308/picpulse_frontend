@@ -66,7 +66,7 @@ function Image({
       targetRef.current.clientWidth * scaleX,
       targetRef.current.clientHeight * scaleY,
       0,
-      0
+      index
     );
   };
 
