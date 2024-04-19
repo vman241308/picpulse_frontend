@@ -12,6 +12,8 @@ function Image({
   handleMovement,
   handleResize,
   removeOverlay,
+  overlayID,
+  selectOverlay,
 }) {
   const targetRef = useRef(null);
 
@@ -126,6 +128,7 @@ function Image({
           e.target.style.transform = e.drag.transform;
           handleNewUserInteraction(e);
         }}
+        onClick={() => selectOverlay(overlayID)}
       />
     </div>
   );

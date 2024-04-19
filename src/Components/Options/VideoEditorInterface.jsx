@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import videojs from "video.js";
 import Image from "./Image.jsx";
 import RecordingIco from "@/assets/icons/recording_ico.png";
 
@@ -24,8 +23,6 @@ function VideoEditorInterface({
   const [scaleY, setScaleY] = useState(1); // Vertical scaling factor
   const [recordingStatus, setRecordingStatus] = useState();
   const [overlayPositions, setOverlayPositions] = useState([]);
-  const [bgWidth, setBgWidth] = useState(0);
-  const [bgHeight, setBgHeight] = useState(0);
 
   const [coverImageWidth, setCoverImageWidth] = useState(0);
   const [coverImageHeight, setCoverImageHeight] = useState(0);
@@ -33,6 +30,7 @@ function VideoEditorInterface({
   const [styleCoverImageL, setStyleCoverImageL] = useState("");
   const [styleCoverImageR, setStyleCoverImageR] = useState("");
   const [bgResolutionType, setBgResolutionType] = useState(true);
+  const [selectedOverlay, setSelectedOverlay] = useState(0);
 
   useEffect(() => {
     if (bgRef.current && backgroundType === "video") {
@@ -64,21 +62,24 @@ function VideoEditorInterface({
   }, [recordingStatus]);
 
   useEffect(() => {
-    if (overlays.length > 0 && overlays.length > overlayPositions.length) {
-      let overlayPath = overlays[overlays.length - 1];
-      const lastIndex = overlayPath.lastIndexOf("/");
-      const overlayName = overlayPath.substring(lastIndex + 1);
-      const overlayFileName = `${overlayName}.png`;
-      setOverlayPositions((prevPositions) => {
-        return [
-          ...prevPositions,
-          {
-            overlayPath: overlayPath,
-            fileNameFFMPEG: overlayFileName,
-            timeline: [],
-          },
-        ];
-      });
+    if (overlays.length > 0) {
+      if (overlays.length > overlayPositions.length) {
+        let overlayPath = overlays[overlays.length - 1];
+        const lastIndex = overlayPath.lastIndexOf("/");
+        const overlayName = overlayPath.substring(lastIndex + 1);
+        const overlayFileName = `${overlayName}.png`;
+        setOverlayPositions((prevPositions) => {
+          return [
+            ...prevPositions,
+            {
+              id: overlayPositions.length,
+              overlayPath: overlayPath,
+              fileNameFFMPEG: overlayFileName,
+              timeline: [],
+            },
+          ];
+        });
+      }
     } else if (overlays.length === 0) {
       setOverlayPositions([]);
     }
@@ -429,6 +430,23 @@ function VideoEditorInterface({
     EventBus.dispatch("setLoading", false);
   };
 
+  const selectOverlay = (selectedOverlayID) => {
+    let tempOverlayPositions = overlayPositions;
+    tempOverlayPositions.map((item) => {
+      if (item.id === selectedOverlayID) {
+        item.id = overlayPositions.length - 1;
+      } else if (item.id > selectedOverlayID) {
+        item.id = item.id - 1;
+      }
+    });
+    setOverlayPositions(tempOverlayPositions);
+    console.log("~~~~~~~~~~~~~~OverlayID", selectedOverlayID);
+  };
+
+  useEffect(() => {
+    console.log("```````OverlayPositions", overlayPositions);
+  }, [overlayPositions]);
+
   return (
     <div className="bg-black w-[80%] h-full border-dashed border-2 border-sky-500 flex items-center justify-center relative">
       <div className="flex items-center justify-center w-full h-full">
@@ -462,17 +480,22 @@ function VideoEditorInterface({
           )}
 
           {videoFile &&
-            overlays?.map((image, index) => (
-              <Image
-                key={index}
-                image={image}
-                index={index}
-                handleMovement={handleMovement}
-                handleResize={handleResize}
-                scaleX={scaleX}
-                scaleY={scaleY}
-                removeOverlay={removeOverlay}
-              />
+            overlayPositions?.map((image, index) => (
+              <div>
+                <Image
+                  key={image.id}
+                  image={image.overlayPath}
+                  index={index}
+                  handleMovement={handleMovement}
+                  handleResize={handleResize}
+                  scaleX={scaleX}
+                  scaleY={scaleY}
+                  removeOverlay={removeOverlay}
+                  overlayID={image.id}
+                  selectOverlay={selectOverlay}
+                  // className={`z-[${image.id}]`}
+                />
+              </div>
             ))}
         </div>
       </div>
