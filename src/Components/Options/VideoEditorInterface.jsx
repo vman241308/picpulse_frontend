@@ -62,8 +62,6 @@ function VideoEditorInterface({
     }
   }, [recordingStatus]);
 
-  console.log(overlays);
-
   useEffect(() => {
     if (overlays.length > 0) {
       if (overlays.length > overlayPositions.length) {
@@ -303,8 +301,8 @@ function VideoEditorInterface({
 
       overlayPositions.length > 0
         ? (ffmpegCommand = [
-            // "-hwaccel",
-            // "cuda",
+            "-hwaccel",
+            "cuda",
             "-i",
             `${videoFile}`,
             // Include each overlay as an input
@@ -322,25 +320,33 @@ function VideoEditorInterface({
             `[out]`,
             "-r",
             "30",
-            "-an",
             "-c:a",
             "copy",
             "-t",
-            `${duration}`,
+            // `${duration}`,
+            "5",
             "-c:v",
-            // "h264_nvenc",
-            "libx264",
+            "hevc_nvenc",
+            "-an",
+            "-sn",
+            // "libx264",
             `./src/utils/public/output_${fileName}.mp4`,
           ])
         : (ffmpegCommand = [
             `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
             "1",
+            "-hwaccel",
+            "cuda",
             "-i",
             `${videoFile}`,
             "-vf",
             "scale=trunc(iw/2)*2:trunc(ih/2)*2",
             "-t",
             `${duration}`,
+            "-c:v",
+            "hevc_nvenc",
+            "-an",
+            "-sn",
             `./src/utils/public/output_${fileName}.mp4`,
           ]);
     } catch (error) {
@@ -380,26 +386,40 @@ function VideoEditorInterface({
           break;
       }
     }
+
     let musicLink = !audio?.paused && audio?.src;
     console.log(musicLink);
 
     try {
       musicLink
         ? (aspectFFmpegCommand = [
+            "-hwaccel",
+            "cuda",
             "-i",
             `./src/utils/public/output_${fileName}.mp4`,
             "-i",
             `${musicLink}`,
             "-vf",
             `${aspectFilter}`,
+            "-c:v",
+            "hevc_nvenc",
+            "-an",
+            "-sn",
             "-shortest",
             `./src/utils/public/output_${fileName}_result.mp4`,
           ])
         : (aspectFFmpegCommand = [
+            "-hwaccel",
+            "cuda",
             "-i",
             `./src/utils/public/output_${fileName}.mp4`,
             "-vf",
             `${aspectFilter}`,
+            "-c:v",
+            "hevc_nvenc",
+            "-an",
+            "-sn",
+            "-shortest",
             `./src/utils/public/output_${fileName}_result.mp4`,
           ]);
     } catch (error) {
@@ -416,6 +436,7 @@ function VideoEditorInterface({
           fileName: `output_${fileName}_result.mp4`,
         })
         .then(async (res) => {
+          console.log(res.data.message);
           const response = await fetch(res.data.message);
           const blob = await response.blob();
           const blobUrl = URL.createObjectURL(blob);
