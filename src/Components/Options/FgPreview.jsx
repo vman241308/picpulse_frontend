@@ -23,7 +23,7 @@ export const FgPreview = ({
   downloadedOverlay,
   setDownloadedOverlay,
   selectedCategory,
-  setPageType
+  setPageType,
 }) => {
   const [LinerIndex, setLinerIndex] = useState(null);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -35,12 +35,14 @@ export const FgPreview = ({
 
   const fetchData = async () => {
     if (!selectedCategory.id) {
-      setPageType("main")
+      setPageType("main");
     }
     var result = [];
     var overlayData = [];
     if (localStorage.getItem("SelectedCategoryId") === selectedCategory.id) {
-      result = JSON.parse(localStorage.getItem("SelectedForegroundCategoryData"));
+      result = JSON.parse(
+        localStorage.getItem("SelectedForegroundCategoryData")
+      );
       setData(result);
     } else {
       result = await axios(
@@ -48,12 +50,15 @@ export const FgPreview = ({
       );
       overlayData = result.data.data;
       if (overlayData.length == 0) {
-        setPageType('main');
+        setPageType("main");
         return;
       }
       setData(overlayData);
       localStorage.setItem("SelectedCategoryId", selectedCategory.id);
-      localStorage.setItem("SelectedForegroundCategoryData", JSON.stringify(overlayData));
+      localStorage.setItem(
+        "SelectedForegroundCategoryData",
+        JSON.stringify(overlayData)
+      );
     }
     setLoading(false);
   };

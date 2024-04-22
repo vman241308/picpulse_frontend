@@ -84,17 +84,12 @@ function Image({
   }, [image]);
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: "0px",
-      }}
-      className={`draggable-${index}`}
-      id={`draggable${index}`}
-    >
+    <>
       <div
         ref={targetRef}
         style={{
+          position: "absolute",
+          top: "0px",
           background: `url(${image}) no-repeat`,
           backgroundSize: "100% 100%",
           width: "640px",
@@ -130,7 +125,7 @@ function Image({
         }}
         onClick={() => selectOverlay(overlayID)}
       />
-    </div>
+    </>
   );
 }
 

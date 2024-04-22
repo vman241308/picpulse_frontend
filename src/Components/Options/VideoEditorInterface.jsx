@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import axios from "axios";
 
 import Image from "./Image.jsx";
@@ -60,6 +61,8 @@ function VideoEditorInterface({
       renderVideo(milliTime / 1000);
     }
   }, [recordingStatus]);
+
+  console.log(overlays);
 
   useEffect(() => {
     if (overlays.length > 0) {
@@ -431,21 +434,19 @@ function VideoEditorInterface({
   };
 
   const selectOverlay = (selectedOverlayID) => {
-    let tempOverlayPositions = overlayPositions;
-    tempOverlayPositions.map((item) => {
-      if (item.id === selectedOverlayID) {
-        item.id = overlayPositions.length - 1;
-      } else if (item.id > selectedOverlayID) {
-        item.id = item.id - 1;
-      }
-    });
-    setOverlayPositions(tempOverlayPositions);
+    // let tempOverlayPositions = overlayPositions.map((item) => {
+    //   if (item.id === selectedOverlayID) {
+    //     return { ...item, id: overlayPositions.length - 1 };
+    //   } else if (item.id > selectedOverlayID) {
+    //     return { ...item, id: item.id - 1 };
+    //   } else {
+    //     return item;
+    //   }
+    // });
+
+    // setOverlayPositions(tempOverlayPositions);
     console.log("~~~~~~~~~~~~~~OverlayID", selectedOverlayID);
   };
-
-  useEffect(() => {
-    console.log("```````OverlayPositions", overlayPositions);
-  }, [overlayPositions]);
 
   return (
     <div className="bg-black w-[80%] h-full border-dashed border-2 border-sky-500 flex items-center justify-center relative">
@@ -481,21 +482,19 @@ function VideoEditorInterface({
 
           {videoFile &&
             overlayPositions?.map((image, index) => (
-              <div>
-                <Image
-                  key={image.id}
-                  image={image.overlayPath}
-                  index={index}
-                  handleMovement={handleMovement}
-                  handleResize={handleResize}
-                  scaleX={scaleX}
-                  scaleY={scaleY}
-                  removeOverlay={removeOverlay}
-                  overlayID={image.id}
-                  selectOverlay={selectOverlay}
-                  // className={`z-[${image.id}]`}
-                />
-              </div>
+              <Image
+                key={image.id}
+                image={image.overlayPath}
+                index={index}
+                handleMovement={handleMovement}
+                handleResize={handleResize}
+                scaleX={scaleX}
+                scaleY={scaleY}
+                removeOverlay={removeOverlay}
+                overlayID={image.id}
+                selectOverlay={selectOverlay}
+                // className={`z-[${image.id}]`}
+              />
             ))}
         </div>
       </div>

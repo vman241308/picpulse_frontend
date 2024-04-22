@@ -25,6 +25,9 @@ import { useTheme } from "@mui/material/styles";
 import { FgPreview } from "./FgPreview.jsx";
 import { FgDownloaded } from "./FgDownloaded.jsx";
 
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
@@ -109,6 +112,8 @@ export const ForegroundDialog = ({
   downloadedOverlay,
   setDownloadedOverlay,
   selectedCategory,
+  openErrorAlert,
+  setOpenErrorAlert,
 }) => {
   const [value, setValue] = useState(0);
 
@@ -129,6 +134,10 @@ export const ForegroundDialog = ({
   };
   const handleChangeIndex = (index) => setValue(index);
 
+  const handleCloseErrorAlert = () => {
+    setOpenErrorAlert(false);
+  };
+
   return (
     <Dialog
       open={open}
@@ -138,6 +147,21 @@ export const ForegroundDialog = ({
       aria-describedby="scroll-dialog-description"
       PaperProps={{ style: { height: 800, width: 600 } }}
     >
+      <Snackbar
+        open={openErrorAlert}
+        autoHideDuration={1000}
+        onClose={handleCloseErrorAlert}
+        style={{ zIndex: 9999, position: "fixed" }}
+      >
+        <MuiAlert
+          onClose={handleCloseErrorAlert}
+          severity="info"
+          elevation={6}
+          variant="filled"
+        >
+          Please set background asset firtly.
+        </MuiAlert>
+      </Snackbar>
       <DialogTitle
         id="scroll-dialog-title"
         display={"flex"}
@@ -149,8 +173,8 @@ export const ForegroundDialog = ({
             aria-label="delete"
             onClick={() => {
               setPageType("main");
-              localStorage.setItem("SelectedForegroundCategoryData", "")
-              localStorage.setItem('SelectedFgCategory', "")
+              localStorage.setItem("SelectedForegroundCategoryData", "");
+              localStorage.setItem("SelectedFgCategory", "");
             }}
           >
             <ChevronLeftIcon />
@@ -177,7 +201,7 @@ export const ForegroundDialog = ({
                 component="div"
                 sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
               >
-                {localStorage.getItem('SelectedFgCategory')}
+                {localStorage.getItem("SelectedFgCategory")}
               </Typography>
               <Search>
                 <SearchIconWrapper>
