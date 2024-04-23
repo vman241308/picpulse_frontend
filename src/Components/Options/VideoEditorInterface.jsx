@@ -325,7 +325,7 @@ function VideoEditorInterface({
             "-t",
             `${duration}`,
             "-c:v",
-            "hevc_nvenc",
+            "h264_nvenc",
             "-an",
             "-sn",
             // "libx264",
@@ -343,7 +343,7 @@ function VideoEditorInterface({
             "-t",
             `${duration}`,
             "-c:v",
-            "hevc_nvenc",
+            "h264_nvenc",
             "-an",
             "-sn",
             `./src/utils/public/output_${fileName}.mp4`,
@@ -401,7 +401,7 @@ function VideoEditorInterface({
             "-vf",
             `${aspectFilter}`,
             "-c:v",
-            "hevc_nvenc",
+            "h264_nvenc",
             "-an",
             "-sn",
             "-shortest",
@@ -415,7 +415,7 @@ function VideoEditorInterface({
             "-vf",
             `${aspectFilter}`,
             "-c:v",
-            "hevc_nvenc",
+            "h264_nvenc",
             "-an",
             "-sn",
             "-shortest",
@@ -435,7 +435,6 @@ function VideoEditorInterface({
           fileName: `output_${fileName}_result.mp4`,
         })
         .then(async (res) => {
-          console.log(res.data.message);
           const response = await fetch(res.data.message);
           const blob = await response.blob();
           const blobUrl = URL.createObjectURL(blob);
