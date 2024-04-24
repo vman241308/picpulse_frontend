@@ -12,6 +12,8 @@ function Image({
   handleMovement,
   handleResize,
   removeOverlay,
+  overlayID,
+  selectOverlay,
 }) {
   const targetRef = useRef(null);
 
@@ -66,7 +68,7 @@ function Image({
       targetRef.current.clientWidth * scaleX,
       targetRef.current.clientHeight * scaleY,
       0,
-      0
+      index
     );
   };
 
@@ -82,17 +84,12 @@ function Image({
   }, [image]);
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: "0px",
-      }}
-      className={`draggable-${index}`}
-      id={`draggable${index}`}
-    >
+    <>
       <div
         ref={targetRef}
         style={{
+          position: "absolute",
+          top: "0px",
           background: `url(${image}) no-repeat`,
           backgroundSize: "100% 100%",
           width: "640px",
@@ -126,8 +123,9 @@ function Image({
           e.target.style.transform = e.drag.transform;
           handleNewUserInteraction(e);
         }}
+        onClick={() => selectOverlay(overlayID)}
       />
-    </div>
+    </>
   );
 }
 

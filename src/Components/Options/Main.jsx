@@ -8,7 +8,6 @@ import PropTypes from "prop-types";
 import { MainDialog } from "./MainDialog.jsx";
 import * as fal from "@fal-ai/serverless-client";
 import { DragDropBackground, DragDropOverlay } from "./DragDrop.jsx";
-
 import { ForegroundDialog } from "./ForegroundDialog.jsx";
 import { BackgroundDialog } from "./BackgroundDialog.jsx";
 
@@ -50,7 +49,13 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-export const Main = ({ setVideoFile, setOverlays, setAspectRatio }) => {
+export const Main = ({
+  setVideoFile,
+  setOverlays,
+  setAspectRatio,
+  openErrorAlert,
+  setOpenErrorAlert,
+}) => {
   const [open, setOpen] = useState(false);
   const [scroll, setScroll] = useState("paper");
   const [pageType, setPageType] = useState("main");
@@ -406,6 +411,8 @@ export const Main = ({ setVideoFile, setOverlays, setAspectRatio }) => {
         setDownloadedOverlay={setDownloadedOverlay}
         downloadedOverlay={downloadedOverlay}
         selectedCategory={selectedCategory}
+        openErrorAlert={openErrorAlert}
+        setOpenErrorAlert={setOpenErrorAlert}
       />
     </div>
   );

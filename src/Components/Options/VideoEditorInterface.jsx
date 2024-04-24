@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState } from "react";
+
 import axios from "axios";
 
-import videojs from "video.js";
 import Image from "./Image.jsx";
 import RecordingIco from "@/assets/icons/recording_ico.png";
 
@@ -24,8 +24,6 @@ function VideoEditorInterface({
   const [scaleY, setScaleY] = useState(1); // Vertical scaling factor
   const [recordingStatus, setRecordingStatus] = useState();
   const [overlayPositions, setOverlayPositions] = useState([]);
-  const [bgWidth, setBgWidth] = useState(0);
-  const [bgHeight, setBgHeight] = useState(0);
 
   const [coverImageWidth, setCoverImageWidth] = useState(0);
   const [coverImageHeight, setCoverImageHeight] = useState(0);
@@ -33,18 +31,24 @@ function VideoEditorInterface({
   const [styleCoverImageL, setStyleCoverImageL] = useState("");
   const [styleCoverImageR, setStyleCoverImageR] = useState("");
   const [bgResolutionType, setBgResolutionType] = useState(true);
+  const [selectedOverlay, setSelectedOverlay] = useState(0);
 
   useEffect(() => {
     if (bgRef.current && backgroundType === "video") {
       bgRef.current.load();
     }
 
-    let img = new window.Image();
-    img.onload = () => {
-      setBgWidth(img.width % 2 == 1 ? img.width + 1 : img.width);
-      setBgHeight(img.height % 2 == 1 ? img.height + 1 : img.height);
-    };
-    img.src = videoFile;
+    // let img = new window.Image();
+    // img.onload = () => {
+    //   setBgWidth(img.width % 2 == 1 ? img.width + 1 : img.width);
+    //   setBgHeight(img.height % 2 == 1 ? img.height + 1 : img.height);
+    // };
+    // img.src = videoFile;
+  }, [videoFile]);
+
+  useEffect(() => {
+    setOverlayPositions([]);
+    setOverlays([]);
   }, [videoFile]);
 
   useEffect(() => {
@@ -59,21 +63,24 @@ function VideoEditorInterface({
   }, [recordingStatus]);
 
   useEffect(() => {
-    if (overlays.length > 0 && overlays.length > overlayPositions.length) {
-      let overlayPath = overlays[overlays.length - 1];
-      const lastIndex = overlayPath.lastIndexOf("/");
-      const overlayName = overlayPath.substring(lastIndex + 1);
-      const overlayFileName = `${overlayName}.png`;
-      setOverlayPositions((prevPositions) => {
-        return [
-          ...prevPositions,
-          {
-            overlayPath: overlayPath,
-            fileNameFFMPEG: overlayFileName,
-            timeline: [],
-          },
-        ];
-      });
+    if (overlays.length > 0) {
+      if (overlays.length > overlayPositions.length) {
+        let overlayPath = overlays[overlays.length - 1];
+        const lastIndex = overlayPath.lastIndexOf("/");
+        const overlayName = overlayPath.substring(lastIndex + 1);
+        const overlayFileName = `${overlayName}.png`;
+        setOverlayPositions((prevPositions) => {
+          return [
+            ...prevPositions,
+            {
+              id: overlayPositions.length,
+              overlayPath: overlayPath,
+              fileNameFFMPEG: overlayFileName,
+              timeline: [],
+            },
+          ];
+        });
+      }
     } else if (overlays.length === 0) {
       setOverlayPositions([]);
     }
@@ -196,6 +203,7 @@ function VideoEditorInterface({
       rotation: rotation,
       frame: 1,
     };
+
     setOverlayPositions((prevPositions) => {
       return prevPositions.map((item, index) => {
         if (item.overlayPath === overlayPath && index === imgIndex) {
@@ -272,10 +280,11 @@ function VideoEditorInterface({
             let chainSuffix;
 
             if (overlayPositions.length > 1) {
-              chainSuffix =
-                overlayIndex === overlayPositions.length - 1
-                  ? `[out]`
-                  : `[v${overlayIndex + 1}]`;
+              if (overlayIndex == overlayPositions.length - 1) {
+                chainSuffix = `[out]`;
+              } else {
+                chainSuffix = `[v${overlayIndex + 1}]`;
+              }
             } else {
               chainSuffix = `[out]`;
             }
@@ -292,8 +301,10 @@ function VideoEditorInterface({
 
       overlayPositions.length > 0
         ? (ffmpegCommand = [
-            // "-hwaccel",
-            // "cuda",
+            `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
+            "-1",
+            "-hwaccel",
+            "cuda",
             "-i",
             `${videoFile}`,
             // Include each overlay as an input
@@ -309,27 +320,34 @@ function VideoEditorInterface({
             `${bgscale};${generateOverlayFilters()}`,
             "-map",
             `[out]`,
-            "-r",
-            "30",
-            "-an",
+            // "-r",
+            // "30",
             "-c:a",
             "copy",
             "-t",
             `${duration}`,
             "-c:v",
-            // "h264_nvenc",
-            "libx264",
+            "h264_nvenc",
+            "-an",
+            "-sn",
+            // "libx264",
             `./src/utils/public/output_${fileName}.mp4`,
           ])
         : (ffmpegCommand = [
             `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
-            "1",
+            "-1",
+            "-hwaccel",
+            "cuda",
             "-i",
             `${videoFile}`,
             "-vf",
             "scale=trunc(iw/2)*2:trunc(ih/2)*2",
             "-t",
             `${duration}`,
+            "-c:v",
+            "h264_nvenc",
+            "-an",
+            "-sn",
             `./src/utils/public/output_${fileName}.mp4`,
           ]);
     } catch (error) {
@@ -369,26 +387,38 @@ function VideoEditorInterface({
           break;
       }
     }
+
     let musicLink = !audio?.paused && audio?.src;
     console.log(musicLink);
 
     try {
       musicLink
         ? (aspectFFmpegCommand = [
+            "-hwaccel",
+            "cuda",
             "-i",
             `./src/utils/public/output_${fileName}.mp4`,
             "-i",
             `${musicLink}`,
             "-vf",
             `${aspectFilter}`,
+            "-c:v",
+            "h264_nvenc",
             "-shortest",
             `./src/utils/public/output_${fileName}_result.mp4`,
           ])
         : (aspectFFmpegCommand = [
+            "-hwaccel",
+            "cuda",
             "-i",
             `./src/utils/public/output_${fileName}.mp4`,
             "-vf",
             `${aspectFilter}`,
+            "-c:v",
+            "h264_nvenc",
+            "-an",
+            "-sn",
+            "-shortest",
             `./src/utils/public/output_${fileName}_result.mp4`,
           ]);
     } catch (error) {
@@ -420,6 +450,21 @@ function VideoEditorInterface({
     }
 
     EventBus.dispatch("setLoading", false);
+  };
+
+  const selectOverlay = (selectedOverlayID) => {
+    // let tempOverlayPositions = overlayPositions.map((item) => {
+    //   if (item.id === selectedOverlayID) {
+    //     return { ...item, id: overlayPositions.length - 1 };
+    //   } else if (item.id > selectedOverlayID) {
+    //     return { ...item, id: item.id - 1 };
+    //   } else {
+    //     return item;
+    //   }
+    // });
+
+    // setOverlayPositions(tempOverlayPositions);
+    console.log("~~~~~~~~~~~~~~OverlayID", selectedOverlayID);
   };
 
   return (
@@ -455,16 +500,19 @@ function VideoEditorInterface({
           )}
 
           {videoFile &&
-            overlays?.map((image, index) => (
+            overlayPositions?.map((image, index) => (
               <Image
-                key={index}
-                image={image}
+                key={image.id}
+                image={image.overlayPath}
                 index={index}
                 handleMovement={handleMovement}
                 handleResize={handleResize}
                 scaleX={scaleX}
                 scaleY={scaleY}
                 removeOverlay={removeOverlay}
+                overlayID={image.id}
+                selectOverlay={selectOverlay}
+                // className={`z-[${image.id}]`}
               />
             ))}
         </div>
