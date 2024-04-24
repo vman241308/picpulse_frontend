@@ -38,12 +38,12 @@ function VideoEditorInterface({
       bgRef.current.load();
     }
 
-    let img = new window.Image();
-    img.onload = () => {
-      setBgWidth(img.width % 2 == 1 ? img.width + 1 : img.width);
-      setBgHeight(img.height % 2 == 1 ? img.height + 1 : img.height);
-    };
-    img.src = videoFile;
+    // let img = new window.Image();
+    // img.onload = () => {
+    //   setBgWidth(img.width % 2 == 1 ? img.width + 1 : img.width);
+    //   setBgHeight(img.height % 2 == 1 ? img.height + 1 : img.height);
+    // };
+    // img.src = videoFile;
   }, [videoFile]);
 
   useEffect(() => {
@@ -301,6 +301,8 @@ function VideoEditorInterface({
 
       overlayPositions.length > 0
         ? (ffmpegCommand = [
+            `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
+            "-1",
             "-hwaccel",
             "cuda",
             "-i",
@@ -318,8 +320,8 @@ function VideoEditorInterface({
             `${bgscale};${generateOverlayFilters()}`,
             "-map",
             `[out]`,
-            "-r",
-            "30",
+            // "-r",
+            // "30",
             "-c:a",
             "copy",
             "-t",
@@ -333,7 +335,7 @@ function VideoEditorInterface({
           ])
         : (ffmpegCommand = [
             `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
-            "1",
+            "-1",
             "-hwaccel",
             "cuda",
             "-i",
@@ -402,8 +404,6 @@ function VideoEditorInterface({
             `${aspectFilter}`,
             "-c:v",
             "h264_nvenc",
-            "-an",
-            "-sn",
             "-shortest",
             `./src/utils/public/output_${fileName}_result.mp4`,
           ])
