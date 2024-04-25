@@ -33,17 +33,20 @@ function VideoEditorInterface({
   const [bgResolutionType, setBgResolutionType] = useState(true);
   const [selectedOverlay, setSelectedOverlay] = useState(0);
 
+  const [bgWidth, setBgWidth] = useState(0);
+  const [bgHeight, setBgHeight] = useState(0);
+
   useEffect(() => {
     if (bgRef.current && backgroundType === "video") {
       bgRef.current.load();
     }
 
-    // let img = new window.Image();
-    // img.onload = () => {
-    //   setBgWidth(img.width % 2 == 1 ? img.width + 1 : img.width);
-    //   setBgHeight(img.height % 2 == 1 ? img.height + 1 : img.height);
-    // };
-    // img.src = videoFile;
+    let img = new window.Image();
+    img.onload = () => {
+      setBgWidth(img.width % 2 == 1 ? img.width + 1 : img.width);
+      setBgHeight(img.height % 2 == 1 ? img.height + 1 : img.height);
+    };
+    img.src = videoFile;
   }, [videoFile]);
 
   useEffect(() => {
@@ -112,6 +115,17 @@ function VideoEditorInterface({
       } else {
         originalWidth = bgElement.naturalWidth;
         originalHeight = bgElement.naturalHeight;
+      }
+
+      // let bgscale = `[0:v]scale=trunc(iw/2)*2:trunc(ih/2)*2[v0]`;
+      if (originalWidth > 4096 || originalHeight > 4096) {
+        if (originalWidth > originalHeight) {
+          originalHeight = (originalHeight / originalWidth) * 4096;
+          originalWidth = 4096;
+        } else {
+          originalWidth = (originalWidth / originalHeight) * 4096;
+          originalHeight = 4096;
+        }
       }
 
       const renderedWidth = bgElement.clientWidth;
@@ -297,17 +311,24 @@ function VideoEditorInterface({
     }
 
     try {
-      let bgscale = `[0:v]scale=trunc(iw/2)*2:trunc(ih/2)*2[v0]`;
+      let bgscale;
+      // let bgscale = `[0:v]scale=trunc(iw/2)*2:trunc(ih/2)*2[v0]`;
+      if (bgWidth > 4096 || bgHeight > 4096) {
+        bgWidth > bgHeight
+          ? (bgscale = `[0:v]scale=4096:${(bgHeight / bgWidth) * 4096}[v0]`)
+          : (bgscale = `[0:v]scale=${(bgWidth / bgHeight) * 4096}:4096[v0]`);
+      } else {
+        bgscale = `[0:v]scale=${bgWidth}:${bgHeight}[v0]`;
+      }
 
       overlayPositions.length > 0
         ? (ffmpegCommand = [
-            `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
-            "-1",
             "-hwaccel",
             "cuda",
+            `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
+            `${backgroundType === "video" ? "-1" : "1"}`,
             "-i",
             `${videoFile}`,
-            // Include each overlay as an input
             ...overlayPositions
               .map((overlay) => [
                 "-stream_loop",
@@ -320,30 +341,37 @@ function VideoEditorInterface({
             `${bgscale};${generateOverlayFilters()}`,
             "-map",
             `[out]`,
-            // "-r",
-            // "30",
+            "-r",
+            "30",
             "-c:a",
             "copy",
             "-t",
             `${duration}`,
             "-c:v",
             "h264_nvenc",
+            // "-c:v",
+            // "libx264",
+            // "-crf",
+            // "18",
+            // "-preset",
+            // "veryfast",
             "-an",
             "-sn",
-            // "libx264",
             `./src/utils/public/output_${fileName}.mp4`,
           ])
         : (ffmpegCommand = [
-            `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
-            "-1",
             "-hwaccel",
             "cuda",
+            `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
+            `${backgroundType === "video" ? "-1" : "1"}`,
             "-i",
             `${videoFile}`,
-            "-vf",
-            "scale=trunc(iw/2)*2:trunc(ih/2)*2",
+            "-filter_complex",
+            `${bgscale}`,
             "-t",
             `${duration}`,
+            "-map",
+            `[v0]`,
             "-c:v",
             "h264_nvenc",
             "-an",
