@@ -32,6 +32,7 @@ const VideoEditor = ({ audio }) => {
               playerRef={playerRef}
               setOverlays={setOverlays}
               aspectRatio={aspectRatio}
+              setAspectRatio={setAspectRatio}
               audio={audio}
             />
           ) : (

@@ -67,6 +67,14 @@ export const Main = ({
   const descriptionElementRef = React.useRef(null);
 
   useEffect(() => {
+    EventBus.on("setRatio", (data) => setRatio(data));
+
+    return () => {
+      EventBus.remove("setRatio");
+    };
+  });
+
+  useEffect(() => {
     switch (ratio) {
       case 0:
         setAspectRatio(16);

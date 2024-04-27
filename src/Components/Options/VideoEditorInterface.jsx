@@ -18,6 +18,7 @@ function VideoEditorInterface({
   playerRef,
   setOverlays,
   aspectRatio,
+  setAspectRatio,
   audio,
 }) {
   const [scaleX, setScaleX] = useState(1); // Horizontal scaling factor
@@ -39,6 +40,15 @@ function VideoEditorInterface({
   useEffect(() => {
     if (bgRef.current && backgroundType === "video") {
       bgRef.current.load();
+
+      var vid = document.getElementById("video-js");
+
+      vid.onloadedmetadata = function () {
+        setBgWidth(this.videoWidth);
+        setBgHeight(this.videoHeight);
+      };
+
+      vid.load();
     }
 
     let img = new window.Image();
@@ -52,6 +62,10 @@ function VideoEditorInterface({
   useEffect(() => {
     setOverlayPositions([]);
     setOverlays([]);
+    setAspectRatio(null);
+    EventBus.dispatch("setRatio", 3);
+    setBgWidth(0);
+    setBgHeight(0);
   }, [videoFile]);
 
   useEffect(() => {
@@ -349,6 +363,8 @@ function VideoEditorInterface({
             `${duration}`,
             "-c:v",
             "h264_nvenc",
+            "-cq",
+            "1",
             // "-c:v",
             // "libx264",
             // "-crf",
@@ -372,8 +388,12 @@ function VideoEditorInterface({
             `${duration}`,
             "-map",
             `[v0]`,
+            "-c:a",
+            "copy",
             "-c:v",
             "h264_nvenc",
+            "-cq",
+            "1",
             "-an",
             "-sn",
             `./src/utils/public/output_${fileName}.mp4`,
@@ -432,6 +452,8 @@ function VideoEditorInterface({
             `${aspectFilter}`,
             "-c:v",
             "h264_nvenc",
+            "-cq",
+            "1",
             "-shortest",
             `./src/utils/public/output_${fileName}_result.mp4`,
           ])
@@ -444,6 +466,8 @@ function VideoEditorInterface({
             `${aspectFilter}`,
             "-c:v",
             "h264_nvenc",
+            "-cq",
+            "1",
             "-an",
             "-sn",
             "-shortest",
