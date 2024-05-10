@@ -41,7 +41,6 @@ export const MainDialog = ({
     const result = await axios(
       `http://18.218.107.206/greenscreen/public/service.php?type=get_assets`
     )
-    console.log('bglist::', result.data.data)
     localStorage.setItem("BgList", JSON.stringify(result.data.data));
   }
 

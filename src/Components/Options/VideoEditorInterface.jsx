@@ -437,7 +437,6 @@ function VideoEditorInterface({
     }
 
     let musicLink = !audio?.paused && audio?.src;
-    console.log(musicLink);
 
     try {
       musicLink
@@ -516,7 +515,6 @@ function VideoEditorInterface({
     // });
 
     // setOverlayPositions(tempOverlayPositions);
-    console.log("~~~~~~~~~~~~~~OverlayID", selectedOverlayID);
   };
 
   return (
