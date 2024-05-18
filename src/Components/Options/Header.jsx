@@ -22,6 +22,10 @@ import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+import logoIcon from "@/assets/icons/logo.png";
+import musicIcon from "@/assets/icons/music_ico.png";
+import audioPlayer from "@/assets/audioPlayer.gif";
+
 const Header = ({ audio, setAudio }) => {
   const [open, setOpen] = useState(false);
   const [openMusicDialog, setOpenMusicDialog] = useState(false);
@@ -81,27 +85,15 @@ const Header = ({ audio, setAudio }) => {
   return (
     <div className="flex flex-row justify-between w-full h-20 bg-slate-100">
       <div className="h-20 w-20 ml-[8%] p-1 cursor-pointer hover:brightness-110">
-        <img alt="logo icon" src="src/assets/icons/logo.png" />
+        <img alt="logo icon" src={logoIcon} />
       </div>
       <div className="flex flex-row gap-2 pr-4">
-        {/* <div className="w-20 h-20 p-1 rounded-lg cursor-pointer hover:brightness-110">
-          <img
-            alt="question mark icon"
-            src="src/assets/icons/question_ico.png"
-          />
-        </div> */}
         <div
           className=" w-[70px] h-[70px] p-1 cursor-pointer hover:brightness-110"
           onClick={handleClickOpen("paper")}
         >
-          <img alt="music icon" src="src/assets/icons/music_ico.png" />
+          <img alt="music icon" src={musicIcon} />
         </div>
-        {/* <div className="w-20 h-20 p-1 cursor-pointer hover:brightness-110">
-          <img alt="library icon" src="src/assets/icons/library_ico.png " />
-        </div>
-        <div className="h-20 w-20 p-1.5 cursor-pointer hover:brightness-110">
-          <img alt="settings icon" src="src/assets/icons/settings_ico.png" />
-        </div> */}
       </div>
       <Dialog
         open={open}
@@ -177,7 +169,7 @@ const Header = ({ audio, setAudio }) => {
                             <>
                               <img
                                 alt="Graph animation"
-                                src="src/assets/audioPlayer.gif"
+                                src={audioPlayer}
                                 style={{ width: "150px", height: "24px" }}
                               />
                               <PauseIcon

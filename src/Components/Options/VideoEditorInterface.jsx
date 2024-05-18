@@ -480,7 +480,7 @@ function VideoEditorInterface({
 
     try {
       await axios
-        .post(`http://3.143.204.91:4000/api/editor`, {
+        .post(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/editor`, {
           command: ffmpegCommand,
           aspectCommand: aspectFFmpegCommand,
           fileName: `output_${fileName}_result.mp4`,
@@ -513,7 +513,6 @@ function VideoEditorInterface({
     //     return item;
     //   }
     // });
-
     // setOverlayPositions(tempOverlayPositions);
   };
 
