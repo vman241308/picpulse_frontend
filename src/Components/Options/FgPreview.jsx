@@ -46,7 +46,7 @@ export const FgPreview = ({
       setData(result);
     } else {
       result = await axios(
-        `http://18.218.107.206/greenscreen/public/service.php?type=get_foreground_assets&category_id=${selectedCategory.id}`
+        `${import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL}/greenscreen/public/service.php?type=get_foreground_assets&category_id=${selectedCategory.id}`
       );
       overlayData = result.data.data;
       if (overlayData.length == 0) {

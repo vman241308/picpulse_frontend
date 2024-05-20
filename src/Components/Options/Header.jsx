@@ -46,7 +46,7 @@ const Header = ({ audio, setAudio }) => {
 
   const fetchMusicCategory = async () => {
     const result = await axios(
-      "http://18.218.107.206/greenscreen/public/service.php?type=get_music_category"
+      "${import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL}/greenscreen/public/service.php?type=get_music_category"
     );
     setMusicCategoryList(result.data.data);
   };
@@ -70,7 +70,7 @@ const Header = ({ audio, setAudio }) => {
     const formJson = Object.fromEntries(formData.entries());
     const email = formJson.email;
     const response = await fetch(
-      `http://18.218.107.206/greenscreen/public/service.php?type=check_email&email=${email}`
+      `${import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL}/greenscreen/public/service.php?type=check_email&email=${email}`
     );
 
     if (response.ok) {

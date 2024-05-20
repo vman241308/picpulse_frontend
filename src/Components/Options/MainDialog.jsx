@@ -31,7 +31,7 @@ export const MainDialog = ({
 
   const fetchBgCategory = async () => {
     const result = await axios(
-      "http://18.218.107.206/greenscreen/public/service.php?type=get_category"
+      "${import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL}/greenscreen/public/service.php?type=get_category"
     );
     setBgData(result?.data.data);
     setBgLoading(false);
@@ -39,14 +39,14 @@ export const MainDialog = ({
 
   const fetchBgList = async () => {
     const result = await axios(
-      `http://18.218.107.206/greenscreen/public/service.php?type=get_assets`
+      `${import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL}/greenscreen/public/service.php?type=get_assets`
     )
     localStorage.setItem("BgList", JSON.stringify(result.data.data));
   }
 
   const fetchFgCategory = async () => {
     const result = await axios(
-      "http://18.218.107.206/greenscreen/public/service.php?type=get_foreground_category"
+      "${import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL}/greenscreen/public/service.php?type=get_foreground_category"
     );
     setFgData(result.data.data);
     setFgLoading(false);
