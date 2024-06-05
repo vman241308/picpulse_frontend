@@ -475,8 +475,8 @@ function VideoEditorInterface({
     } catch (error) {
       return;
     }
-    console.log(ffmpegCommand);
-    console.log(aspectFFmpegCommand);
+    // console.log(ffmpegCommand);
+    // console.log(aspectFFmpegCommand);
 
     try {
       await axios
