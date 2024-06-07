@@ -327,10 +327,13 @@ function VideoEditorInterface({
     try {
       let bgscale;
       // let bgscale = `[0:v]scale=trunc(iw/2)*2:trunc(ih/2)*2[v0]`;
+      // img.width % 2 == 1 ? img.width + 1 : img.width;
       if (bgWidth > 4096 || bgHeight > 4096) {
+        let wH = (bgHeight / bgWidth) * 4096;
+        let hW = (bgWidth / bgHeight) * 4096;
         bgWidth > bgHeight
-          ? (bgscale = `[0:v]scale=4096:${(bgHeight / bgWidth) * 4096}[v0]`)
-          : (bgscale = `[0:v]scale=${(bgWidth / bgHeight) * 4096}:4096[v0]`);
+          ? (bgscale = `[0:v]scale=4096:${wH % 2 == 1 ? wH + 1 : wH}[v0]`)
+          : (bgscale = `[0:v]scale=${hW % 2 == 1 ? hW + 1 : hW}:4096[v0]`);
       } else {
         bgscale = `[0:v]scale=${bgWidth}:${bgHeight}[v0]`;
       }
