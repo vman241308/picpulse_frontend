@@ -337,8 +337,8 @@ function VideoEditorInterface({
 
       overlayPositions.length > 0
         ? (ffmpegCommand = [
-            "-hwaccel",
-            "cuda",
+            // "-hwaccel",
+            // "cuda",
             `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
             `${backgroundType === "video" ? "-1" : "1"}`,
             "-i",
@@ -362,7 +362,8 @@ function VideoEditorInterface({
             "-t",
             `${duration}`,
             "-c:v",
-            "h264_nvenc",
+            // "h264_nvenc",
+            "h264",
             "-cq",
             "1",
             // "-c:v",
@@ -376,8 +377,8 @@ function VideoEditorInterface({
             `./src/utils/public/output_${fileName}.mp4`,
           ])
         : (ffmpegCommand = [
-            "-hwaccel",
-            "cuda",
+            // "-hwaccel",
+            // "cuda",
             `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
             `${backgroundType === "video" ? "-1" : "1"}`,
             "-i",
@@ -391,7 +392,8 @@ function VideoEditorInterface({
             "-c:a",
             "copy",
             "-c:v",
-            "h264_nvenc",
+            // "h264_nvenc",
+            "h264",
             "-cq",
             "1",
             "-an",
