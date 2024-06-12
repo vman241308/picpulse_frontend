@@ -67,8 +67,7 @@ const VideoEditor = ({ audio }) => {
                       />
                     </svg>
                     <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                      Something went wrong! You can not use this website for
-                      now.
+                      This site is being restored on to fix an error.
                     </h3>
                     <button
                       data-modal-hide="popup-modal"

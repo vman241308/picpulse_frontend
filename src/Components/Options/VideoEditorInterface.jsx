@@ -369,12 +369,6 @@ function VideoEditorInterface({
             "h264",
             "-cq",
             "1",
-            // "-c:v",
-            // "libx264",
-            // "-crf",
-            // "18",
-            // "-preset",
-            // "veryfast",
             "-an",
             "-sn",
             `./src/utils/public/output_${fileName}.mp4`,
@@ -480,7 +474,7 @@ function VideoEditorInterface({
     } catch (error) {
       return;
     }
-    // console.log(ffmpegCommand);
+    console.log(ffmpegCommand);
     // console.log(aspectFFmpegCommand);
 
     try {
