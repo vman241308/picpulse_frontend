@@ -474,7 +474,7 @@ function VideoEditorInterface({
     } catch (error) {
       return;
     }
-    console.log(ffmpegCommand);
+    // console.log(ffmpegCommand);
     // console.log(aspectFFmpegCommand);
 
     try {
