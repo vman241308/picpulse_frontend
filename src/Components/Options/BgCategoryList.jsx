@@ -38,13 +38,12 @@ export const BgCategoryList = ({
     e.preventDefault();
     e.stopPropagation();
     setPageType("background");
-    localStorage.setItem('SelectedBgCategory', item.category)
+    localStorage.setItem("SelectedBgCategory", item.category);
     setSelectedCategory({
       id: item.id,
       category: item.category,
     });
   };
-
   return (
     <>
       <GlobalStyles
@@ -62,42 +61,43 @@ export const BgCategoryList = ({
         }}
       />
       <ImageList sx={{ width: 1, height: 600 }} cols={4}>
-        {BgData.map((item, index) => (
-          <Box
-            sx={{
-              "&:hover": {
-                cursor: "pointer",
-                "& .MuiImageListItemBar-root": {
-                  backgroundColor: "rgb(133 124 124 / 50%)",
+        {BgData &&
+          BgData.map((item, index) => (
+            <Box
+              sx={{
+                "&:hover": {
+                  cursor: "pointer",
+                  "& .MuiImageListItemBar-root": {
+                    backgroundColor: "rgb(133 124 124 / 50%)",
+                  },
                 },
-              },
-            }}
-            key={index}
-          >
-            <ImageListItem key={item.id} onClick={(e) => preview(e, item)}>
-              <img
-                srcSet={`${item.thumb_url}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                src={`${item.thumb_url}?w=248&fit=crop&auto=format`}
-                alt={item.category}
-                loading="lazy"
-                style={{ height: "127px" }}
-              />
-              <ImageListItemBar
-                title={item.category}
-                // subtitle={item.category}
-                sx={{ transition: "0.3s" }}
-              />
-            </ImageListItem>
+              }}
+              key={index}
+            >
+              <ImageListItem key={item.id} onClick={(e) => preview(e, item)}>
+                <img
+                  // srcSet={`${item.thumb_url}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                  src={`${item.thumb_url}?w=248&fit=crop&auto=format`}
+                  alt={item.category}
+                  loading="lazy"
+                  style={{ height: "127px" }}
+                />
+                <ImageListItemBar
+                  title={item.category}
+                  // subtitle={item.category}
+                  sx={{ transition: "0.3s" }}
+                />
+              </ImageListItem>
 
-            <Box fontSize={12} textAlign={"center"}>
-              {localStorage.getItem("subscriptionData") &&
-              JSON.parse(localStorage.getItem("subscriptionData")).data.length >
-                0
-                ? "Purchased"
-                : "Purchase"}
+              <Box fontSize={12} textAlign={"center"}>
+                {localStorage.getItem("subscriptionData") &&
+                JSON.parse(localStorage.getItem("subscriptionData")).data
+                  .length > 0
+                  ? "Purchased"
+                  : "Purchase"}
+              </Box>
             </Box>
-          </Box>
-        ))}
+          ))}
       </ImageList>
     </>
   );

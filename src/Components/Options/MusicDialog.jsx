@@ -147,7 +147,7 @@ export const MusicDialog = ({
       setData(result);
     } else {
       result = await axios(
-        `http://18.218.107.206/greenscreen/public/service.php?type=get_music_assets&category_id=${selectedMusicCategory.id}`
+        `${import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL}/greenscreen/public/service.php?type=get_music_assets&category_id=${selectedMusicCategory.id}`
       );
       musicData = result.data.data;
       setData(musicData);
@@ -169,7 +169,7 @@ export const MusicDialog = ({
   const handleChangeIndex = (index) => setValue(index);
 
   const handleToggle = (value) => () => {
-    console.log("valule::", value);
+    // console.log("valule::", value);
   };
 
   const download = async (item, index) => {

@@ -33,7 +33,7 @@ export const BgPhotoPreview = ({
 
   const fetchData = async () => {
     // const result = await axios(
-    //   `http://18.218.107.206/greenscreen/public/service.php?type=get_assets&category_id=${selectedCategory.id}`
+    //   `${import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL}/greenscreen/public/service.php?type=get_assets&category_id=${selectedCategory.id}`
     // );
     // const imageData = result.data.data.filter(
     //   (item) => item.s3_url.endsWith(".jpg") || item.s3_url.endsWith(".png")
@@ -48,7 +48,7 @@ export const BgPhotoPreview = ({
         );
       } else {
         result = await axios(
-          `http://18.218.107.206/greenscreen/public/service.php?type=get_assets`
+          `${import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL}/greenscreen/public/service.php?type=get_assets`
         );
         imageData = result.data.data.filter((item) =>
             (item.s3_url.endsWith(".jpg") || item.s3_url.endsWith(".png")) &&

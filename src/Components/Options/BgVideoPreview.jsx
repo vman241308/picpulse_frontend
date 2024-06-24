@@ -50,7 +50,7 @@ export const BgVideoPreview = ({
         );
       } else {
         result = await axios(
-          `http://18.218.107.206/greenscreen/public/service.php?type=get_assets`
+          `${import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL}/greenscreen/public/service.php?type=get_assets`
         );
         videoData = result.data.data.filter((item) =>
             (item.s3_url.endsWith(".mp4") || item.s3_url.endsWith(".mov")) &&

@@ -327,18 +327,21 @@ function VideoEditorInterface({
     try {
       let bgscale;
       // let bgscale = `[0:v]scale=trunc(iw/2)*2:trunc(ih/2)*2[v0]`;
+      // img.width % 2 == 1 ? img.width + 1 : img.width;
       if (bgWidth > 4096 || bgHeight > 4096) {
+        let wH = (bgHeight / bgWidth) * 4096;
+        let hW = (bgWidth / bgHeight) * 4096;
         bgWidth > bgHeight
-          ? (bgscale = `[0:v]scale=4096:${(bgHeight / bgWidth) * 4096}[v0]`)
-          : (bgscale = `[0:v]scale=${(bgWidth / bgHeight) * 4096}:4096[v0]`);
+          ? (bgscale = `[0:v]scale=4096:${wH % 2 == 1 ? wH + 1 : wH}[v0]`)
+          : (bgscale = `[0:v]scale=${hW % 2 == 1 ? hW + 1 : hW}:4096[v0]`);
       } else {
         bgscale = `[0:v]scale=${bgWidth}:${bgHeight}[v0]`;
       }
 
       overlayPositions.length > 0
         ? (ffmpegCommand = [
-            "-hwaccel",
-            "cuda",
+            // "-hwaccel",
+            // "cuda",
             `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
             `${backgroundType === "video" ? "-1" : "1"}`,
             "-i",
@@ -362,22 +365,17 @@ function VideoEditorInterface({
             "-t",
             `${duration}`,
             "-c:v",
-            "h264_nvenc",
+            // "h264_nvenc",
+            "h264",
             "-cq",
             "1",
-            // "-c:v",
-            // "libx264",
-            // "-crf",
-            // "18",
-            // "-preset",
-            // "veryfast",
             "-an",
             "-sn",
             `./src/utils/public/output_${fileName}.mp4`,
           ])
         : (ffmpegCommand = [
-            "-hwaccel",
-            "cuda",
+            // "-hwaccel",
+            // "cuda",
             `${backgroundType === "video" ? "-stream_loop" : "-loop"}`,
             `${backgroundType === "video" ? "-1" : "1"}`,
             "-i",
@@ -391,7 +389,8 @@ function VideoEditorInterface({
             "-c:a",
             "copy",
             "-c:v",
-            "h264_nvenc",
+            // "h264_nvenc",
+            "h264",
             "-cq",
             "1",
             "-an",
@@ -437,7 +436,6 @@ function VideoEditorInterface({
     }
 
     let musicLink = !audio?.paused && audio?.src;
-    console.log(musicLink);
 
     try {
       musicLink
@@ -476,12 +474,12 @@ function VideoEditorInterface({
     } catch (error) {
       return;
     }
-    console.log(ffmpegCommand);
-    console.log(aspectFFmpegCommand);
+    // console.log(ffmpegCommand);
+    // console.log(aspectFFmpegCommand);
 
     try {
       await axios
-        .post(`http://3.143.204.91:4000/api/editor`, {
+        .post(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/editor`, {
           command: ffmpegCommand,
           aspectCommand: aspectFFmpegCommand,
           fileName: `output_${fileName}_result.mp4`,
@@ -514,9 +512,7 @@ function VideoEditorInterface({
     //     return item;
     //   }
     // });
-
     // setOverlayPositions(tempOverlayPositions);
-    console.log("~~~~~~~~~~~~~~OverlayID", selectedOverlayID);
   };
 
   return (

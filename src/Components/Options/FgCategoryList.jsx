@@ -84,7 +84,7 @@ export const FgCategoryList = ({
         >
           <ImageListItem key={item.id} onClick={(e) => preview(e, item)}>
             <img
-              srcSet={`${item.thumb_url}?w=248&fit=crop&auto=format&dpr=2 2x`}
+              // srcSet={`${item.thumb_url}?w=248&fit=crop&auto=format&dpr=2 2x`}
               src={`${item.thumb_url}?w=248&fit=crop&auto=format`}
               alt={item.category}
               FgLoading="lazy"
