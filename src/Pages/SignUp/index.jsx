@@ -96,6 +96,7 @@ const Signup = () => {
               null,
               (err, data) => {
                 if (err) {
+                  console.log(err);
                   const notify = () =>
                     toast.error("Failed to create account!", {
                       position: "top-right",
