@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authenticate } from "../../utils/authenticate";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import loginLogo from "@/assets/icons/login_logo.png";
 
 const SignIn = () => {
@@ -46,9 +49,8 @@ const SignIn = () => {
     });
   };
 
-  const handleClick = () => {
-    setEmailErr("");
-    setPasswordErr("");
+  const handleClick = (e) => {
+    e.preventDefault();
     validation()
       .then(
         (res) => {
@@ -56,12 +58,22 @@ const SignIn = () => {
             authenticate(email, password)
               .then(
                 (data) => {
+                  console.log("data", data);
                   setSignInErr("");
                   Navigate("/");
                 },
                 (err) => {
                   console.log(err);
                   setSignInErr(err.message);
+
+                  const notify = () =>
+                    toast.error(err.message, {
+                      position: "top-right",
+                      autoClose: 2500,
+                      theme: "colored",
+                    });
+
+                  notify();
                 }
               )
               .catch((err) => console.log(err));
@@ -173,6 +185,8 @@ const SignIn = () => {
           </div>
         </div>
       </div>
+
+      <ToastContainer />
     </section>
   );
 };

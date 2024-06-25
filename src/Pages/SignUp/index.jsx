@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CognitoUserAttribute } from "amazon-cognito-identity-js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import loginLogo from "@/assets/icons/login_logo.png";
 import userpool from "../../utils/userPool";
-import PicAlert from "../../Components/picAlert";
 
 const Signup = () => {
   const Navigate = useNavigate();
@@ -12,9 +13,10 @@ const Signup = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [emailErr, setEmailErr] = useState("");
   const [passwordErr, setPasswordErr] = useState("");
-  const [responseAlert, setResponseAlert] = useState(false);
+  const [responseAlert, setResponseAlert] = useState(true);
 
   const formInputChange = (formField, value) => {
     switch (formField) {
@@ -26,6 +28,9 @@ const Signup = () => {
         break;
       case "password":
         setPassword(value);
+        break;
+      case "confirm_password":
+        setConfirmPassword(value);
         break;
       default:
         break;
@@ -50,6 +55,9 @@ const Signup = () => {
       } else if (password.length < 6) {
         setPasswordErr("must be 6 character");
         resolve({ email: "", password: "must be 6 character" });
+      } else if (password !== confirmPassword) {
+        setPasswordErr("Does not matched!");
+        resolve({ email: "", password: "Does not matched" });
       } else {
         resolve({ email: "", password: "" });
       }
@@ -58,11 +66,12 @@ const Signup = () => {
   };
 
   const handleClick = (e) => {
-    setEmailErr("");
-    setPasswordErr("");
+    e.preventDefault();
+
     validation()
       .then(
         (res) => {
+          console.log("first", res.email, res.password);
           if (res.email === "" && res.password === "") {
             const attributeList = [];
 
@@ -87,15 +96,36 @@ const Signup = () => {
               null,
               (err, data) => {
                 if (err) {
-                  console.log(err);
-                  alert("Couldn't sign up");
+                  const notify = () =>
+                    toast.error("Failed to create account!", {
+                      position: "top-right",
+                      autoClose: 2500,
+                      theme: "colored",
+                    });
+
+                  notify();
                 } else {
-                  console.log(data);
-                  alert("User Added Successfully");
+                  const notify = () =>
+                    toast.success("Successed to create account!", {
+                      position: "top-right",
+                      autoClose: 2500,
+                      theme: "colored",
+                    });
+
+                  notify();
                   Navigate("/");
                 }
               }
             );
+          } else {
+            const notify = () =>
+              toast.error(res.email ? res.email : res.password, {
+                position: "top-right",
+                autoClose: 2500,
+                theme: "colored",
+              });
+
+            notify();
           }
         },
         (err) => console.log(err)
@@ -167,6 +197,9 @@ const Signup = () => {
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required=""
+                  onChange={(e) => {
+                    formInputChange("password", e.target.value);
+                  }}
                 />
               </div>
               <div>
@@ -184,7 +217,7 @@ const Signup = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required=""
                   onChange={(e) => {
-                    formInputChange("password", e.target.value);
+                    formInputChange("confirm_password", e.target.value);
                   }}
                 />
               </div>
@@ -234,7 +267,7 @@ const Signup = () => {
         </div>
       </div>
 
-      <PicAlert />
+      <ToastContainer />
     </section>
   );
 };
