@@ -157,8 +157,8 @@ export const BackgroundDialog = ({
             aria-label="delete"
             onClick={() => {
               setPageType("main");
-              localStorage.setItem("SelectedBackgroundCategoryData", "")
-              localStorage.setItem('SelectedBgCategory', "")
+              localStorage.setItem("SelectedBackgroundCategoryData", "");
+              localStorage.setItem("SelectedBgCategory", "");
             }}
           >
             <ChevronLeftIcon />
@@ -185,9 +185,9 @@ export const BackgroundDialog = ({
                 component="div"
                 sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
               >
-                {localStorage.getItem('SelectedBgCategory')}
+                {localStorage.getItem("SelectedBgCategory")}
               </Typography>
-              <Search>
+              {/* <Search>
                 <SearchIconWrapper>
                   <SearchIcon />
                 </SearchIconWrapper>
@@ -195,7 +195,7 @@ export const BackgroundDialog = ({
                   placeholder="Search…"
                   inputProps={{ "aria-label": "search" }}
                 />
-              </Search>
+              </Search> */}
             </Toolbar>
           </Box>
           <Box sx={{ bgcolor: "background.paper" }}>

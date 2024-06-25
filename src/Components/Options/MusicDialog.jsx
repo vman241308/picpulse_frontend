@@ -147,7 +147,11 @@ export const MusicDialog = ({
       setData(result);
     } else {
       result = await axios(
-        `${import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL}/greenscreen/public/service.php?type=get_music_assets&category_id=${selectedMusicCategory.id}`
+        `${
+          import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL
+        }/greenscreen/public/service.php?type=get_music_assets&category_id=${
+          selectedMusicCategory.id
+        }`
       );
       musicData = result.data.data;
       setData(musicData);
@@ -267,7 +271,7 @@ export const MusicDialog = ({
               >
                 {selectedMusicCategory.category}
               </Typography>
-              <Search>
+              {/* <Search>
                 <SearchIconWrapper>
                   <SearchIcon />
                 </SearchIconWrapper>
@@ -275,7 +279,7 @@ export const MusicDialog = ({
                   placeholder="Search…"
                   inputProps={{ "aria-label": "search" }}
                 />
-              </Search>
+              </Search> */}
             </Toolbar>
           </Box>
           <Box sx={{ bgcolor: "background.paper", padding: "0" }}>

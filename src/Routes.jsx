@@ -4,6 +4,7 @@ import React from "react";
 import Editor from "./Pages/Editor";
 import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
+import ConfirmCode from "./Pages/ConfirmCode";
 
 const Routes = [
   {
@@ -17,6 +18,10 @@ const Routes = [
   {
     path: "/signup",
     element: <SignUp />,
+  },
+  {
+    path: "/confirmcode",
+    element: <ConfirmCode />,
   },
 ];
 

@@ -113,7 +113,9 @@ const Signup = () => {
                     });
 
                   notify();
-                  Navigate("/");
+                  Navigate("/confirmcode", {
+                    state: { email: email },
+                  });
                 }
               }
             );
