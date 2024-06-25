@@ -5,12 +5,15 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  define: {
+    global: {},
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"), // '@/components/Auth/SignIn' will resolve to './src/components/Auth/SignIn'
     },
   },
   server: {
-    host: '0.0.0.0'
+    host: "0.0.0.0",
   },
 });
