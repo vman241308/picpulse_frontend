@@ -157,12 +157,12 @@ const SignIn = () => {
                     </label>
                   </div>
                 </div>
-                <a
+                {/* <a
                   href="#"
                   className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Forgot password?
-                </a>
+                </a> */}
               </div>
               <button
                 type="submit"

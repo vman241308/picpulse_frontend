@@ -203,7 +203,7 @@ export const ForegroundDialog = ({
               >
                 {localStorage.getItem("SelectedFgCategory")}
               </Typography>
-              <Search>
+              {/* <Search>
                 <SearchIconWrapper>
                   <SearchIcon />
                 </SearchIconWrapper>
@@ -211,7 +211,7 @@ export const ForegroundDialog = ({
                   placeholder="Search…"
                   inputProps={{ "aria-label": "search" }}
                 />
-              </Search>
+              </Search> */}
             </Toolbar>
           </Box>
           <Box sx={{ bgcolor: "background.paper" }}>
