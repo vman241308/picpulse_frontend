@@ -137,8 +137,8 @@ const Signup = () => {
   };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <section className="bg-gray-50 dark:bg-gray-900 grid grid-cols-2">
+      <div className="col-span-1 w-full flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a
           href="#"
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
@@ -267,6 +267,37 @@ const Signup = () => {
               </p>
             </form>
           </div>
+        </div>
+      </div>
+      <div className="col-span-1 w-full flex items-center justify-center">
+        <div className="flex flex-col gap-10 justify-start max-w-xl">
+          <p class="text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white">
+            <span class="text-blue-600 dark:text-blue-500">Email</span>{" "}
+            Instruction
+          </p>
+          <ul class="text-2xl space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400 text-start -indent-8">
+            <li>Please enter a valid email address.</li>
+            <li>
+              Ensure your email is correctly spelled and includes the ‘@’ symbol
+              and a domain (e.g. john@company.com).
+            </li>
+            <li>
+              Do not use an email address that is already associated with
+              another account.
+            </li>
+          </ul>
+          <p class="text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white">
+            <span class="text-blue-600 dark:text-blue-500">Password</span>{" "}
+            Instruction
+          </p>
+          <ul class="text-2xl space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400 text-start -indent-8">
+            <li>Your password must be a minimum of 8 characters long.</li>
+            <li>
+              It must include at least one uppercase letter, one lowercase
+              letter, one number.
+            </li>
+            <li>It must include one special character (e.g., !, $, #, %).</li>
+          </ul>
         </div>
       </div>
 
