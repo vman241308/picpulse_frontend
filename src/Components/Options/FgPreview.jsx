@@ -39,27 +39,31 @@ export const FgPreview = ({
     }
     var result = [];
     var overlayData = [];
-    if (localStorage.getItem("SelectedCategoryId") === selectedCategory.id) {
-      result = JSON.parse(
-        localStorage.getItem("SelectedForegroundCategoryData")
-      );
-      setData(result);
-    } else {
-      result = await axios(
-        `${import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL}/greenscreen/public/service.php?type=get_foreground_assets&category_id=${selectedCategory.id}`
-      );
-      overlayData = result.data.data;
-      if (overlayData.length == 0) {
-        setPageType("main");
-        return;
-      }
-      setData(overlayData);
-      localStorage.setItem("SelectedCategoryId", selectedCategory.id);
-      localStorage.setItem(
-        "SelectedForegroundCategoryData",
-        JSON.stringify(overlayData)
-      );
+    // if (localStorage.getItem("SelectedCategoryId") === selectedCategory.id) {
+    //   result = JSON.parse(
+    //     localStorage.getItem("SelectedForegroundCategoryData")
+    //   );
+    //   setData(result);
+    // } else {
+    result = await axios(
+      `${
+        import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL
+      }/greenscreen/public/service.php?type=get_foreground_assets&category_id=${
+        selectedCategory.id
+      }`
+    );
+    overlayData = result.data.data;
+    if (overlayData.length == 0) {
+      setPageType("main");
+      return;
     }
+    setData(overlayData);
+    localStorage.setItem("SelectedCategoryId", selectedCategory.id);
+    localStorage.setItem(
+      "SelectedForegroundCategoryData",
+      JSON.stringify(overlayData)
+    );
+    // }
     setLoading(false);
   };
 

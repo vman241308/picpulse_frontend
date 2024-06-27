@@ -22,7 +22,7 @@ export const BgVideoPreview = ({
   setVideoFile,
   setDownloadedData,
   selectedCategory,
-  setPageType
+  setPageType,
 }) => {
   const [LinerIndex, setLinerIndex] = useState(null);
   const [isDownloadinng, setIsDownloadinng] = useState(false);
@@ -34,39 +34,48 @@ export const BgVideoPreview = ({
 
   const fetchData = async () => {
     if (!selectedCategory.id) {
-      setPageType("main")
+      setPageType("main");
     }
     var result = [];
     var videoData = [];
-    if (localStorage.getItem("SelectedCategoryId") == selectedCategory.id) {
-      result = JSON.parse(localStorage.getItem("SelectedBackgroundCategoryData"));
-      setData(result);
+    // if (localStorage.getItem("SelectedCategoryId") == selectedCategory.id) {
+    //   result = JSON.parse(
+    //     localStorage.getItem("SelectedBackgroundCategoryData")
+    //   );
+    //   setData(result);
+    // } else {
+    if (localStorage.getItem("BgList")) {
+      result = JSON.parse(localStorage.getItem("BgList"));
+      videoData = result.filter(
+        (item) =>
+          (item.s3_url.endsWith(".mp4") || item.s3_url.endsWith(".mov")) &&
+          item.category_id == selectedCategory.id
+      );
     } else {
-      if (localStorage.getItem('BgList')) {
-        result = JSON.parse(localStorage.getItem("BgList"));
-        videoData = result.filter((item) =>
-            (item.s3_url.endsWith(".mp4") || item.s3_url.endsWith(".mov")) &&
-            item.category_id == selectedCategory.id
-        );
-      } else {
-        result = await axios(
-          `${import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL}/greenscreen/public/service.php?type=get_assets`
-        );
-        videoData = result.data.data.filter((item) =>
-            (item.s3_url.endsWith(".mp4") || item.s3_url.endsWith(".mov")) &&
-            item.category_id == selectedCategory.id
-        );
-      }
-
-      if (videoData.length == 0) {
-        setPageType('main');
-        return;
-      }
-      
-      setData(videoData);
-      localStorage.setItem("SelectedCategoryId", selectedCategory.id);
-      localStorage.setItem("SelectedBackgroundCategoryData", JSON.stringify(videoData));
+      result = await axios(
+        `${
+          import.meta.env.VITE_REACT_APP_PHP_BACKEND_URL
+        }/greenscreen/public/service.php?type=get_assets`
+      );
+      videoData = result.data.data.filter(
+        (item) =>
+          (item.s3_url.endsWith(".mp4") || item.s3_url.endsWith(".mov")) &&
+          item.category_id == selectedCategory.id
+      );
     }
+
+    if (videoData.length == 0) {
+      setPageType("main");
+      return;
+    }
+
+    setData(videoData);
+    localStorage.setItem("SelectedCategoryId", selectedCategory.id);
+    localStorage.setItem(
+      "SelectedBackgroundCategoryData",
+      JSON.stringify(videoData)
+    );
+    // }
     setLoading(false);
   };
 

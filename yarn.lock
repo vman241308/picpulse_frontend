@@ -3772,6 +3772,11 @@ anymatch@^3.0.3, anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
+apng-js@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.npmjs.org/apng-js/-/apng-js-1.1.2.tgz"
+  integrity sha512-2Y+zFxXek28EU6KZ6hyyPbPlybH5tTO+QgHqWOFu2DwLMmSUdTX21l/f6mpC5g9hgYeSQJI6l4ABzsCyHPjC4g==
+
 appdirsjs@^1.2.4:
   version "1.2.7"
   resolved "https://registry.npmjs.org/appdirsjs/-/appdirsjs-1.2.7.tgz"
