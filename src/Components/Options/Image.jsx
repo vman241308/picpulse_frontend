@@ -85,12 +85,28 @@ function Image({
 
   return (
     <>
-      <div
+      {/* <img
         ref={targetRef}
+        src={image}
+        alt="Animated Image"
         style={{
           position: "absolute",
           top: "0px",
-          background: `url(${image}) no-repeat`,
+          width: "640px",
+          height: "480px",
+          objectFit: "fill",
+        }}
+        onDoubleClick={() => {
+          removeOverlay(index, image);
+        }}
+      /> */}
+      <img
+        ref={targetRef}
+        src={image}
+        style={{
+          position: "absolute",
+          top: "0px",
+          // background: `url(${image}) no-repeat`,
           backgroundSize: "100% 100%",
           width: "640px",
           height: "480px",
