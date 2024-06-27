@@ -12,7 +12,6 @@ function Editor() {
   const setLoading = (data) => {
     setIsLoading(data);
   };
-  0;
 
   useEffect(() => {
     EventBus.on("setLoading", (data) => setLoading(data));
@@ -30,7 +29,7 @@ function Editor() {
           width: "100vw",
           height: "100vh",
           backgroundColor: "rgba(10,10,10, 82%)",
-          zIndex: 999,
+          zIndex: 9999,
           display: `${isLoading ? "flex" : "none"}`,
           alignItems: "center",
           justifyContent: "center",

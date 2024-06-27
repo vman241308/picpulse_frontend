@@ -1,5 +1,9 @@
 import React, { useRef, useEffect } from "react";
 import Moveable from "react-moveable";
+import axios from "axios";
+import parseAPNG from "apng-js";
+
+import EventBus from "../../utils/EventBus.jsx";
 
 let prevWidth = 0;
 let prevHeight = 0;
@@ -16,6 +20,7 @@ function Image({
   selectOverlay,
 }) {
   const targetRef = useRef(null);
+  const playerRef = useRef();
 
   const rotationExtractAndRound = (translate) => {
     const match = translate.match(/rotate\((.*?)deg\)/);
@@ -72,25 +77,86 @@ function Image({
     );
   };
 
+  // useEffect(() => {
+  //   let img = new window.Image();
+  //   img.onload = () => {
+  //     if (targetRef.current) {
+  //       targetRef.current.style.backgroundImage = `url(${img.src})`;
+  //     }
+  //   };
+  //   img.src = image;
+  //   handleMetadataLoaded();
+  // }, [image]);
+
+  const getImageBuffer = (url) => {
+    return fetch(url).then((response) => response.arrayBuffer());
+  };
+
+  const playPng = async (buffer, canvas) => {
+    const apng = parseAPNG(buffer);
+    const player = await apng.getPlayer(canvas.getContext("2d"));
+
+    return player;
+  };
+
   useEffect(() => {
-    let img = new window.Image();
-    img.onload = () => {
-      if (targetRef.current) {
-        targetRef.current.style.backgroundImage = `url(${img.src})`;
-      }
-    };
-    img.src = image;
+    getImageBuffer(image).then(async (b) => {
+      playerRef.current = await playPng(b, targetRef.current);
+      playerRef.current.play();
+    });
+
     handleMetadataLoaded();
+    // const canvas = targetRef.current;
+    // const ctx = canvas.getContext("2d");
+    // fetch(image)
+    //   .then((response) => {
+    //     console.log("~~~~response", response);
+    //     EventBus.dispatch("setLoading", true);
+    //     return response.arrayBuffer();
+    //   })
+    //   .then((buffer) => {
+    //     console.log("~~~~~buffer", buffer);
+    //     EventBus.dispatch("setLoading", false);
+    //     return APNG.parse(buffer);
+    //   })
+    //   .then((apng) => {
+    //     if (apng instanceof APNG) {
+    //       canvas.width = apng.width;
+    //       canvas.height = apng.height;
+
+    //       apng.getPlayer(ctx).then((player) => {
+    //         player.play();
+    //         const animate = () => {
+    //           player.renderNextFrame();
+    //           requestAnimationFrame(animate);
+    //         };
+    //         animate();
+    //       });
+    //     }
+    //   });
   }, [image]);
 
   return (
     <>
-      <div
+      {/* <div
         ref={targetRef}
         style={{
           position: "absolute",
           top: "0px",
           background: `url(${image}) no-repeat`,
+          backgroundSize: "100% 100%",
+          width: "640px",
+          height: "480px",
+        }}
+        onDoubleClick={() => {
+          removeOverlay(index, image);
+        }}
+      /> */}
+      <canvas
+        ref={targetRef}
+        style={{
+          position: "absolute",
+          top: "0px",
           backgroundSize: "100% 100%",
           width: "640px",
           height: "480px",
