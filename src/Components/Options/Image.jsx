@@ -20,7 +20,6 @@ function Image({
   selectOverlay,
 }) {
   const targetRef = useRef(null);
-  const playerRef = useRef();
 
   const rotationExtractAndRound = (translate) => {
     const match = translate.match(/rotate\((.*?)deg\)/);
@@ -88,52 +87,46 @@ function Image({
   //   handleMetadataLoaded();
   // }, [image]);
 
-  const getImageBuffer = (url) => {
-    return fetch(url).then((response) => response.arrayBuffer());
+  const getImageBuffer = async (url) => {
+    return await fetch(url).then((response) => response.arrayBuffer());
   };
 
   const playPng = async (buffer, canvas) => {
     const apng = parseAPNG(buffer);
     const player = await apng.getPlayer(canvas.getContext("2d"));
 
+    if (apng instanceof Error) {
+      console.error("Failed to parse APNG:", apng.message);
+      return;
+    }
+
+    player.numPlays = 0;
+
+    const { width, height } = apng.frames[0];
+    canvas.width = width;
+    canvas.height = height;
+
+    const scaleWidth = canvas.clientWidth / width;
+    const scaleHeight = canvas.clientHeight / height;
+    const scale = Math.min(scaleWidth, scaleHeight);
+
+    const context = canvas.getContext("2d");
+    context.scale(scale, scale);
+
+    player.play();
     return player;
   };
 
   useEffect(() => {
+    const canvas = targetRef.current;
+    canvas.width = 640; // Set initial width
+    canvas.height = 480; // Set initial height
+
     getImageBuffer(image).then(async (b) => {
-      playerRef.current = await playPng(b, targetRef.current);
-      playerRef.current.play();
-    });
+      await playPng(b, targetRef.current);
+    }, []);
 
     handleMetadataLoaded();
-    // const canvas = targetRef.current;
-    // const ctx = canvas.getContext("2d");
-    // fetch(image)
-    //   .then((response) => {
-    //     console.log("~~~~response", response);
-    //     EventBus.dispatch("setLoading", true);
-    //     return response.arrayBuffer();
-    //   })
-    //   .then((buffer) => {
-    //     console.log("~~~~~buffer", buffer);
-    //     EventBus.dispatch("setLoading", false);
-    //     return APNG.parse(buffer);
-    //   })
-    //   .then((apng) => {
-    //     if (apng instanceof APNG) {
-    //       canvas.width = apng.width;
-    //       canvas.height = apng.height;
-
-    //       apng.getPlayer(ctx).then((player) => {
-    //         player.play();
-    //         const animate = () => {
-    //           player.renderNextFrame();
-    //           requestAnimationFrame(animate);
-    //         };
-    //         animate();
-    //       });
-    //     }
-    //   });
   }, [image]);
 
   return (
@@ -157,9 +150,8 @@ function Image({
         style={{
           position: "absolute",
           top: "0px",
-          backgroundSize: "100% 100%",
-          width: "640px",
-          height: "480px",
+          // width: "640px",
+          // height: "480px",
         }}
         onDoubleClick={() => {
           removeOverlay(index, image);
