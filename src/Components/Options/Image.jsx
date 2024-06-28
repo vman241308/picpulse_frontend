@@ -20,7 +20,6 @@ function Image({
   selectOverlay,
 }) {
   const targetRef = useRef(null);
-  const playerRef = useRef();
 
   const rotationExtractAndRound = (translate) => {
     const match = translate.match(/rotate\((.*?)deg\)/);
@@ -96,16 +95,21 @@ function Image({
     const apng = parseAPNG(buffer);
     const player = await apng.getPlayer(canvas.getContext("2d"));
 
+    if (apng instanceof Error) {
+      console.error("Failed to parse APNG:", apng.message);
+      return;
+    }
+
+    player.numPlays = 0;
+    player.play();
     return player;
   };
 
   useEffect(() => {
     getImageBuffer(image).then(async (b) => {
-      playerRef.current = await playPng(b, targetRef.current);
-      playerRef.current.play();
-    });
+      await playPng(b, targetRef.current);
+    }, []);
 
-    handleMetadataLoaded();
     // const canvas = targetRef.current;
     // const ctx = canvas.getContext("2d");
     // fetch(image)
