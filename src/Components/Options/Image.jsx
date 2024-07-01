@@ -76,62 +76,62 @@ function Image({
     );
   };
 
-  // useEffect(() => {
-  //   let img = new window.Image();
-  //   img.onload = () => {
-  //     if (targetRef.current) {
-  //       targetRef.current.style.backgroundImage = `url(${img.src})`;
-  //     }
-  //   };
-  //   img.src = image;
-  //   handleMetadataLoaded();
-  // }, [image]);
-
-  const getImageBuffer = async (url) => {
-    return await fetch(url).then((response) => response.arrayBuffer());
-  };
-
-  const playPng = async (buffer, canvas) => {
-    const apng = parseAPNG(buffer);
-    const player = await apng.getPlayer(canvas.getContext("2d"));
-
-    if (apng instanceof Error) {
-      console.error("Failed to parse APNG:", apng.message);
-      return;
-    }
-
-    player.numPlays = 0;
-
-    const { width, height } = apng.frames[0];
-    canvas.width = width;
-    canvas.height = height;
-
-    const scaleWidth = canvas.clientWidth / width;
-    const scaleHeight = canvas.clientHeight / height;
-    const scale = Math.min(scaleWidth, scaleHeight);
-
-    const context = canvas.getContext("2d");
-    context.scale(scale, scale);
-
-    player.play();
-    return player;
-  };
-
   useEffect(() => {
-    const canvas = targetRef.current;
-    canvas.width = 640; // Set initial width
-    canvas.height = 480; // Set initial height
-
-    getImageBuffer(image).then(async (b) => {
-      await playPng(b, targetRef.current);
-    }, []);
-
+    let img = new window.Image();
+    img.onload = () => {
+      if (targetRef.current) {
+        targetRef.current.style.backgroundImage = `url(${img.src})`;
+      }
+    };
+    img.src = image;
     handleMetadataLoaded();
   }, [image]);
 
+  // const getImageBuffer = async (url) => {
+  //   return await fetch(url).then((response) => response.arrayBuffer());
+  // };
+
+  // const playPng = async (buffer, canvas) => {
+  //   const apng = parseAPNG(buffer);
+  //   const player = await apng.getPlayer(canvas.getContext("2d"));
+
+  //   if (apng instanceof Error) {
+  //     console.error("Failed to parse APNG:", apng.message);
+  //     return;
+  //   }
+
+  //   player.numPlays = 0;
+
+  //   const { width, height } = apng.frames[0];
+  //   canvas.width = width;
+  //   canvas.height = height;
+
+  //   const scaleWidth = canvas.clientWidth / width;
+  //   const scaleHeight = canvas.clientHeight / height;
+  //   const scale = Math.min(scaleWidth, scaleHeight);
+
+  //   const context = canvas.getContext("2d");
+  //   context.scale(scale, scale);
+
+  //   player.play();
+  //   return player;
+  // };
+
+  // useEffect(() => {
+  //   const canvas = targetRef.current;
+  //   canvas.width = 640; // Set initial width
+  //   canvas.height = 480; // Set initial height
+
+  //   getImageBuffer(image).then(async (b) => {
+  //     await playPng(b, targetRef.current);
+  //   }, []);
+
+  //   handleMetadataLoaded();
+  // }, [image]);
+
   return (
     <>
-      {/* <div
+      <div
         ref={targetRef}
         style={{
           position: "absolute",
@@ -144,8 +144,8 @@ function Image({
         onDoubleClick={() => {
           removeOverlay(index, image);
         }}
-      /> */}
-      <canvas
+      />
+      {/* <canvas
         ref={targetRef}
         style={{
           position: "absolute",
@@ -156,7 +156,7 @@ function Image({
         onDoubleClick={() => {
           removeOverlay(index, image);
         }}
-      />
+      /> */}
       <Moveable
         target={targetRef}
         draggable={true}
